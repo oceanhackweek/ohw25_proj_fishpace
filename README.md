@@ -1,44 +1,29 @@
-# ohwyy_proj_template
+# FisHy PACE: Predicting fish distributions from phytoplankton using hyperspectral satellite data
 
-Template for starting Oceanhackweek project repos. 
+## Project Description
 
-This repo is an example of how teams can structure their project repositories and format their project README.md file, but feel free to adapt as suits your needs.
-
-**Folder Structure**
-
-* `contributor_folders` (optional) Each contributor can make a folder here and 
-push their work here during the week. This will allow everyone to see each others work but prevent any merge conflicts. It is good if participants are new to collaborative coding.
-* `final_notebooks` When the team develops shared final notebooks, they 
-can be shared here. Make sure to communicate so that you limit merge conflicts.
-* `scripts` Shared scripts or functions can be added here.
-* `data` Shared dataset can be shared here. Note, do not put large datasets on GitHub. Speak to the organizers if you 
-need to share large datasets. Each team member can have a version of the dataset locally in the same folder to 
-preserve relative paths, but the dataset does not need to be added to git/GitHub (you can use `.gitignore`).
-
-You can start with a simple structure and as you progress you can refine it to contain more components. [Here](https://cookiecutter-data-science.drivendata.org/#directory-structure) is an example of a more elaborate structure for a data science project.
-
-## Project Name
-
-## One-line Description
+Our goal is to show how the new PACE (Plankton, Aerosol, Cloud, ocean Ecosystem) dataset can enhance our ability to predict species distributions.
 
 ## Planning
 
 ## Collaborators
 
-| Name                | Role                |
-|---------------------|---------------------|
-| Participant 1       | Project Facilitator |
-| Participant 2       | Participant         |
-| Participant 3       | Participant         |
+| Name             | Role                       |
+|------------------|----------------------------|
+| Jon Peake        | Project Facilitator/Mentor |
+| Sam Alaimo       | Participant                |
+| Israt Jahan Mili | Participant                |
+| Alberto Rivera   | Participant                |
+| Isidora Rojas    | Participant                |
+| Max Titcomb      | Participant                |
 
 ## Planning
 
-* Initial idea: "short description"
-* Ideation jam board: Add link
-* Ideation Presentation: Add link
-* Slack channel: ohw25_proj_name
-* Project google drive: Add link
-* Final presentation: Add link
+-   Initial idea: Understand potential associations between phytoplankton species or abundance and adult fish functional groups or larvae respectively
+-   Final idea: Predict adult fish distributions from PACE chlorophyll and absorption data and compare to predictions from MODIS chlorophyll data
+-   Ideation Presentation: [Link](https://docs.google.com/presentation/d/1oRBbjYOHBqAwBdsVWctXN-ScwihK1mItiyZXgEEFPC4/edit?usp=sharing)
+-   Slack channel: ohw25_proj_fishy
+-   Final presentation: TBD
 
 ## Background
 
@@ -53,4 +38,3 @@ You can start with a simple structure and as you progress you can refine it to c
 ## Lessons Learned
 
 ## References
-
