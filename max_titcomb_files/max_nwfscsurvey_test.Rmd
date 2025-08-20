@@ -1,0 +1,118 @@
+---
+title: "max_nwfscsurvey_test"
+output: html_document
+date: "2025-08-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Data pulled from: https://pfmc-assessments.github.io/nwfscSurvey/
+#install.packages("remotes")
+#remotes::install_github("pfmc-assessments/nwfscSurvey")
+library(nwfscSurvey)
+library(dplyr)
+library(purrr)
+
+#Functions
+ls("package:nwfscSurvey")
+
+#Get all species
+species_list <- GetSppDefault.fn()
+
+haul <- pull_haul(survey = "NWFSC.Combo")
+
+#Test
+catch = pull_catch(
+  common_name = "Pacific ocean perch", 
+  survey = "NWFSC.Combo")
+bio = pull_bio(
+  common_name = "Pacific ocean perch", 
+  survey = "NWFSC.Combo")
+
+#Filter to when Pace data starts
+catch <- catch%>%
+  filter(as.Date(Date) >= as.Date("2024-04-11"))
+unique(catch$Date)
+
+bio <- bio%>%
+  filter(as.Date(Date) >= as.Date("2024-04-11"))
+unique(bio$Date)
+
+
+plot_cpue(
+  catch = catch)
+
+PlotMap.fn(
+  dat = catch)
+```
+#Iterated code
+```{r}
+# catch = pull_catch(
+#   common_name = "Yellowtail rockfish", 
+#   survey = "NWFSC.Combo", years = c(2023,2050))
+
+# species + pretty labels
+species_list <- GetSppDefault.fn()
+pretty_map <- setNames(
+  paste0(toupper(substring(gsub("_"," ", species_list),1,1)),
+         substring(gsub("_"," ", species_list),2)),
+  species_list
+)
+labels <- unname(pretty_map)
+
+# safe fetch (NULL on error/no catches)
+safe_pull_catch <- possibly(
+  function(lbl) pull_catch(common_name = lbl, survey = "NWFSC.Combo", years = c(2023, 2050)),
+  otherwise = NULL
+)
+
+# 1) pull  2) drop NULL  3) date-filter  4) drop empties  -> names always in sync
+catch_raw   <- set_names(map(labels, safe_pull_catch), labels)
+catch_nonNA <- discard(catch_raw, is.null)
+catch_filt  <- map(catch_nonNA, ~ filter(.x, as.Date(Date) >= as.Date("2024-04-11")))
+catch_list  <- discard(catch_filt, ~ nrow(.x) == 0)   # <-- final named list
+
+catch_all <- list_rbind(imap(catch_list, ~ mutate(.x, species = .y)))
+
+# status <- tibble(
+#   species = labels,
+#   status  = case_when(
+#     !(species %in% names(catch_nonNA)) ~ "no data / error",
+#     !(species %in% names(catch_list))  ~ "no rows after date filter",
+#     TRUE                               ~ "ok"
+#   )
+# )
+
+```
+
+
+
+
+
+#All Survey Sites
+
+```{r}
+library(ggplot2)
+library(maps)
+
+world <- map_data("world")
+
+ggplot() +
+  geom_polygon(data = world, aes(x = long, y = lat, group = group),
+               fill = "gray90", color = "gray60") +
+  geom_point(data = bio, aes(x = Longitude_dd, y = Latitude_dd),
+             color = "red", size = 2, alpha = 0.7) +
+  coord_quickmap(
+    xlim = range(bio$Longitude_dd, na.rm = TRUE) + c(-2, 2),  # add buffer
+    ylim = range(bio$Latitude_dd, na.rm = TRUE) +  c(-2, 2)
+  ) +
+  labs(title = "Survey Sites", x = "Longitude", y = "Latitude") +
+  theme_minimal()
+```
+
+
+
+

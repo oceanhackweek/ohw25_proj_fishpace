@@ -1,0 +1,94 @@
+---
+title: "max_nwfscsurvey_test"
+output: html_document
+date: "2025-08-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Data pulled from: https://pfmc-assessments.github.io/nwfscSurvey/
+#install.packages("remotes")
+#remotes::install_github("pfmc-assessments/nwfscSurvey")
+library(nwfscSurvey)
+
+#Functions
+ls("package:nwfscSurvey")
+
+#Get all species
+species_list <- GetSppDefault.fn()
+
+#Test
+catch = pull_catch(
+  common_name = "Pacific ocean perch", 
+  survey = "NWFSC.Combo")
+bio = pull_bio(
+  common_name = "Pacific ocean perch", 
+  survey = "NWFSC.Combo")
+
+#Filter to when Pace data starts
+catch <- catch%>%
+  filter(as.Date(Date) >= as.Date("2024-04-11"))
+unique(catch$Date)
+
+bio <- bio%>%
+  filter(as.Date(Date) >= as.Date("2024-04-11"))
+unique(bio$Date)
+
+
+plot_cpue(
+  catch = catch)
+
+plot_bio_patterns(
+  bio = bio, 
+  col_name = "Length_cm")
+
+wh_plot_proportion(
+  data_catch = catch,
+  data_bio = bio
+)
+
+
+
+strata <- CreateStrataDF.fn(
+  names = c("shallow_s", "deep_s", "shallow_n", "deep_n"), 
+  depths.shallow = c(  55,  183,  55, 183),
+  depths.deep    = c( 183,  400, 183, 400),
+  lats.south     = c(34.5, 34.5,  42,  42),
+  lats.north     = c(  42,   42,  49,  49)
+)
+
+biomass = get_design_based(
+  data = catch,  
+  strata = strata)
+
+plot_index(
+  data = biomass,
+  plot = 1)
+```
+
+
+```{r}
+library(ggplot2)
+library(maps)
+
+world <- map_data("world")
+
+ggplot() +
+  geom_polygon(data = world, aes(x = long, y = lat, group = group),
+               fill = "gray90", color = "gray60") +
+  geom_point(data = bio, aes(x = Longitude_dd, y = Latitude_dd),
+             color = "red", size = 2, alpha = 0.7) +
+  coord_quickmap(
+    xlim = range(bio$Longitude_dd, na.rm = TRUE) + c(-2, 2),  # add buffer
+    ylim = range(bio$Latitude_dd, na.rm = TRUE) +  c(-2, 2)
+  ) +
+  labs(title = "Survey Sites", x = "Longitude", y = "Latitude") +
+  theme_minimal()
+```
+
+
+
+
