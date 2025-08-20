@@ -79,9 +79,11 @@ TBD
 
 -   NASA Goddard Space Flight Center, Ocean Ecology Laboratory, Ocean Biology Processing Group. Moderate-resolution Imaging Spectroradiometer (MODIS) Aqua Chlorophyll Data; NASA OB.DAAC, Greenbelt, MD, USA. <https://dx.doi.org/10.5067/AQUA/MODIS/L3M/CHL/2022.0>.
 
--   \[NWFSC data cite\]
+-   Chantel Wetzel, Kelli Johnson, Ian Taylor, Eric Ward, Allan Hicks, John Wallace, Sean Anderson, Brian Langseth, eric-ward, Kiva Oken, Maurice Codespoti Goodman, Jim Thorson, Joshua Zahner, & Kathryn Doering. (2025). pfmc-assessments/nwfscSurvey: 2025 groundfish assessments version (v.2.7). Zenodo. https://doi.org/10.5281/zenodo.15235956
 
--   \[NEFSC data cite\]
+-  Northeast Fisheries Science Center, 2025: Fall Bottom Trawl Survey, https://www.fisheries.noaa.gov/inport/item/22560.
+
+-  Northeast Fisheries Science Center, 2025: Spring Bottom Trawl Survey, https://www.fisheries.noaa.gov/inport/item/22561.
 
 -   CalCOFI (2024). California Cooperative Oceanic Fisheries Investigation (CalCOFI). Retrieved from [http://www.calcofi.org](http://www.calcofi.org/)
 
