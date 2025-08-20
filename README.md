@@ -27,6 +27,8 @@ Our goal is to show how the new PACE (Plankton, Aerosol, Cloud, ocean Ecosystem)
 
 ## Background
 
+PACE (Plankton, Aerosol, Cloud, ocean Ecosystem) is NASA's newest earth-observing satellite that collects hyperspectral measurements across a broad range of visible wavelengths. The data PACE collects allows us to better resolve absorbance spectra at any given point in the ocean than previous earth-observing satellites (e.g., MODIS). This includes better estimates of Chlorophyll-A, which is highly correlated with primary production. Chlorophyll-A concentrations derived from MODIS have been previously shown to be important predictors of fish distributions and abundance.
+
 ## Goals
 
 ## Datasets
