@@ -42,7 +42,7 @@ ggplot() +
   labs(title = "Survey Sites", x = "Longitude", y = "Latitude") +
   theme_minimal()
 
-write_csv(trawl_sites, "ne_trawl_sites.csv")
+#write_csv(trawl_sites, "ne_trawl_sites.csv")
 ```
 
 
@@ -130,12 +130,48 @@ catch_data_wide <- catch_data_wide %>%
 
 catch_data_extraction <- catch_data_wide%>%
   select(latitude_dd, longitude_dd, Trawl_id, date_formatted, datetime_utc_iso)
-write_csv(catch_data_extraction, "catch_data_extraction")
+catch_data_extraction <- catch_data_extraction %>%
+  mutate(dates = format(as.Date(date_formatted, format = "%Y-%b-%d"), "%Y-%m-%d"))
+write_csv(catch_data_extraction, "catch_data_extraction.csv")
 
 ```
 
 
 
+
+
+#Make a prediction grid (np.meshgrid in python)
+```{r}
+# extent <- sf::read_sf(here("/Users/maxtitcomb/Documents/research/first_year_project/code_v2/data/gis_data_raw/tnc_habitat_extent_caribbean/tnc_habitat_extent_caribbean.shp"))
+# extent <- st_transform(extent, crs = chosen_crs)
+# 
+# 
+# # ggplot(extent) +
+# #   geom_sf() +
+# #   geom_sf(data = survey, size = 0.5)
+# 
+# # create a polygon based off the mesh boundaries
+# new_poly <- st_convex_hull(st_union(grouper_barrier_mesh$mesh_sf))
+# plot(new_poly)
+# st_crs(new_poly)
+# 
+# # remove land from polygon
+# poly <- st_difference(new_poly, na_coast_proj)
+# st_crs(poly) 
+# plot(poly)
+# st_bbox(poly)
+# 
+# resolution <- 8000 # poly is in meters; 2000 is pretty fine: 2000m x 2000m = 4 km2
+# r <- raster::raster(as(extent, "Spatial"), resolution = resolution)
+# rr <- raster::rasterize(as(extent, "Spatial"), r, getCover = TRUE)
+# plot(rr)
+```
+
+
+#Set up SDMtmb model
+```{r}
+
+```
 
 
 
