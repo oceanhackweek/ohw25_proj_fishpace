@@ -1,56 +1,90 @@
-# ohwyy_proj_template
+# FisHy PACE: Predicting fish distributions from phytoplankton using hyperspectral satellite data
 
-Template for starting Oceanhackweek project repos. 
+## Project Description
 
-This repo is an example of how teams can structure their project repositories and format their project README.md file, but feel free to adapt as suits your needs.
-
-**Folder Structure**
-
-* `contributor_folders` (optional) Each contributor can make a folder here and 
-push their work here during the week. This will allow everyone to see each others work but prevent any merge conflicts. It is good if participants are new to collaborative coding.
-* `final_notebooks` When the team develops shared final notebooks, they 
-can be shared here. Make sure to communicate so that you limit merge conflicts.
-* `scripts` Shared scripts or functions can be added here.
-* `data` Shared dataset can be shared here. Note, do not put large datasets on GitHub. Speak to the organizers if you 
-need to share large datasets. Each team member can have a version of the dataset locally in the same folder to 
-preserve relative paths, but the dataset does not need to be added to git/GitHub (you can use `.gitignore`).
-
-You can start with a simple structure and as you progress you can refine it to contain more components. [Here](https://cookiecutter-data-science.drivendata.org/#directory-structure) is an example of a more elaborate structure for a data science project.
-
-## Project Name
-
-## One-line Description
+Our goal is to show how the new PACE (Plankton, Aerosol, Cloud, ocean Ecosystem) dataset can enhance our ability to predict species distributions.
 
 ## Planning
 
 ## Collaborators
 
-| Name                | Role                |
-|---------------------|---------------------|
-| Participant 1       | Project Facilitator |
-| Participant 2       | Participant         |
-| Participant 3       | Participant         |
+| Name             | Role                       |
+|------------------|----------------------------|
+| Jon Peake        | Project Facilitator/Mentor |
+| Sam Alaimo       | Participant                |
+| Israt Jahan Mili | Participant                |
+| Alberto Rivera   | Participant                |
+| Isidora Rojas    | Participant                |
+| Max Titcomb      | Participant                |
 
 ## Planning
 
-* Initial idea: "short description"
-* Ideation jam board: Add link
-* Ideation Presentation: Add link
-* Slack channel: ohw25_proj_name
-* Project google drive: Add link
-* Final presentation: Add link
+-   Initial idea: Understand potential associations between phytoplankton species or abundance and adult fish functional groups or larvae respectively
+-   Final idea: Predict adult fish distributions from PACE chlorophyll and absorption data and compare to predictions from MODIS chlorophyll data
+-   Ideation Presentation: [Link](https://docs.google.com/presentation/d/1oRBbjYOHBqAwBdsVWctXN-ScwihK1mItiyZXgEEFPC4/edit?usp=sharing)
+-   Slack channel: ohw25_proj_fishy
+-   Final presentation: TBD
 
 ## Background
 
+PACE (Plankton, Aerosol, Cloud, ocean Ecosystem) is NASA's newest earth-observing satellite that collects hyperspectral measurements across a broad range of visible wavelengths. The data PACE collects allows us to better resolve absorbance spectra at any given point in the ocean than previous earth-observing satellites (i.e., MODIS). This includes better estimates of Chlorophyll-A, which is highly correlated with primary production. Chlorophyll-A concentrations derived from MODIS have been previously shown to be important predictors of fish distributions and abundance. We want to investigate how well PACE Chlorophyll-A data can predict fish distributions compared to MODIS.
+
 ## Goals
+
+1.  Create species distribution models using Chlorophyll-A data from PACE and MODIS across larval and adult stages of fish.
+
+2.  Compare the predictive ability of Chlorophyll-A from PACE and MODIS.
+
+3.  Assess differences in effect sizes between PACE Chlorophyll-A and absorbance to determine whether absorbance is a better predictor of fish occurrence than Chlorophyll
+
+4.  (If time permits) Assess differences in Chlorophyll-A effect size between the Pacific and Atlantic datasets
 
 ## Datasets
 
+-   PACE Chlorophyll-A
+
+-   MODIS Chlorophyll-A
+
+-   Federal Bottom Trawl Survey (NW and NE)
+
+-   CalCOFI
+
+-   EcoMON
+
 ## Workflow/Roadmap
+
+### 1.  Data Collection and Assimilation 
+
+First, we pulled data from the bottom trawl fish datasets (NEFSC, NWFSC) and the larval fish datasets (CalCOFI, EcoMON) for the east and west coasts. We identified the area and temporal extent/resolution of each dataset to determine the spatiotemporal limits of our project. We then pulled Chlorophyll-A data from PACE and MODIS, specifying the boundaries and temporal extent for the area and years of interest. We additionally pulled absorbance data from the PACE dataset and environmental data taken at time of sample from the trawl datasets.
+
+### 2. Data preparation
+
+### 3. Model training
+
+### 4. Model prediction and visualization
 
 ## Results/Findings
 
+TBD
+
 ## Lessons Learned
+
+TBD
 
 ## References
 
+### Data
+
+-   NASA Goddard Space Flight Center, Ocean Ecology Laboratory, Ocean Biology Processing Group. Plankton, Aerosol, Cloud, ocean Ecosystem (PACE) Chlorophyll Data; NASA OB.DAAC, Greenbelt, MD, USA. <https://dx.doi.org/10.5067/PACE/OCI/L3M/CHL/3.0>
+
+-   NASA Goddard Space Flight Center, Ocean Ecology Laboratory, Ocean Biology Processing Group. Moderate-resolution Imaging Spectroradiometer (MODIS) Aqua Chlorophyll Data; NASA OB.DAAC, Greenbelt, MD, USA. <https://dx.doi.org/10.5067/AQUA/MODIS/L3M/CHL/2022.0>.
+
+-   Chantel Wetzel, Kelli Johnson, Ian Taylor, Eric Ward, Allan Hicks, John Wallace, Sean Anderson, Brian Langseth, eric-ward, Kiva Oken, Maurice Codespoti Goodman, Jim Thorson, Joshua Zahner, & Kathryn Doering. (2025). pfmc-assessments/nwfscSurvey: 2025 groundfish assessments version (v.2.7). Zenodo. https://doi.org/10.5281/zenodo.15235956
+
+-  Northeast Fisheries Science Center, 2025: Fall Bottom Trawl Survey, https://www.fisheries.noaa.gov/inport/item/22560.
+
+-  Northeast Fisheries Science Center, 2025: Spring Bottom Trawl Survey, https://www.fisheries.noaa.gov/inport/item/22561.
+
+-   CalCOFI (2024). California Cooperative Oceanic Fisheries Investigation (CalCOFI). Retrieved from [http://www.calcofi.org](http://www.calcofi.org/)
+
+-   US DOC/NOAA/NMFS. Zooplankton and ichthyoplankton abundance and distribution in the North Atlantic collected by the Ecosystem Monitoring (EcoMon) Project. NOAA National Centers for Environmental Information. [https://www.ncei.noaa.gov/archive/accession/0187513](#0).
