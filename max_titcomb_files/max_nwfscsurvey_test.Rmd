@@ -131,7 +131,7 @@ catch_data_wide <- catch_data_wide %>%
 catch_data_extraction <- catch_data_wide%>%
   select(latitude_dd, longitude_dd, Trawl_id, date_formatted, datetime_utc_iso)
 catch_data_extraction <- catch_data_extraction %>%
-  mutate(dates = format(as.Date(date_formatted, format = "%Y-%b-%d"), "%Y-%m-%d"))
+  mutate(date_sheets = format(as.Date(date_formatted, format = "%Y-%b-%d"), "%Y-%m-%d"))
 write_csv(catch_data_extraction, "catch_data_extraction.csv")
 
 ```
