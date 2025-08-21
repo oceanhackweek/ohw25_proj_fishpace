@@ -1,0 +1,222 @@
+Common_name,Dominant_prey_juvenile,Dominant_prey_adult,Dominant_movement,Trophic_position,juv_prey_category,adult_prey_category
+Aleutian skate,"Benthic micro-crustaceans, worms","Polychaetes, amphipods, small crustaceans & fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+California grenadier,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+California halibut,"Planktonic crustaceans, amphipods","Fish (flatfishes, sand lance) & cephalopods",Mobile,High,Plankton,Small fish
+California lizardfish,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+California skate,"Benthic micro-crustaceans, worms","Polychaetes, amphipods, small crustaceans & fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+California slickhead,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+California tonguefish,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+Kamchatka eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+Mexican rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+Pacific angel shark,"Crustaceans, small fishes, squid",Fish & squid (piscivorous),Mobile,High,Small fish,Small fish
+Pacific argentine,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Resident,Low,Plankton,Plankton
+Pacific chub mackerel,"Zooplankton, small crustaceans","Fish, squid & crustaceans",Mobile,Medium,Plankton,Small fish
+Pacific cod,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,High,Plankton,Small fish
+Pacific electric ray,"Benthic micro-crustaceans, worms","Benthic invertebrates (crabs, mollusks); some fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+Pacific grenadier,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+Pacific hagfish,Small benthic invertebrates,"Carrion, polychaetes & small fish",Resident,Medium,Benthic invertebrates,Benthic invertebrates
+Pacific hake,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+Pacific halibut,"Planktonic crustaceans, amphipods","Fish (flatfishes, sand lance) & cephalopods",Mobile,High,Plankton,Small fish
+Pacific herring,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+Pacific lamprey,Detritus & micro-organisms (filter-feeding ammocoetes),Parasitic on fishes (blood & tissues),Mobile,Medium,Benthic invertebrates,Small fish
+Pacific ocean perch,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+Pacific pompano butterfish,"Zooplankton, small crustaceans","Fish, squid & crustaceans",Mobile,Medium,Plankton,Small fish
+Pacific sardine,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+Pacific sleeper shark,"Crustaceans, small fishes, squid","Fish, sharks, cephalopods, carrion",Mobile,High,Small fish,Small fish
+Pacific staghorn sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+Pacific tomcod,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,High,Plankton,Small fish
+Pacific viperfish,Zooplankton & fish larvae,Fish & squid (mesopelagic predators),Mobile,High,Plankton,Small fish
+anchovy unident.,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+angel shark unident.,"Crustaceans, small fishes, squid",Fish & squid (piscivorous),Mobile,High,Small fish,Small fish
+arrowtooth flounder,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+aurora rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+bank rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+barred sand bass,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+barreleye,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Mobile,Medium,Plankton,Small fish
+bat ray,"Benthic micro-crustaceans, worms","Benthic invertebrates (crabs, mollusks); some fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+bearded eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+big skate,"Benthic micro-crustaceans, worms","Polychaetes, amphipods, small crustaceans & fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+bigeye starsnout poacher,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+bigfin eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+bigmouth sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+black eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+black hagfish,Small benthic invertebrates,"Carrion, polychaetes & small fish",Resident,Medium,Benthic invertebrates,Benthic invertebrates
+blackbelly dragonfish,Zooplankton & fish larvae,Fish & squid (mesopelagic predators),Mobile,High,Plankton,Small fish
+blackbelly eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+blackfin poacher,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+blackfin snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+blackgill rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+blackline snipe eel,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+blackmouth eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+blacksmelt unident.,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+blacktail snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+blacktail snailfish group,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+blacktip poacher,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+blob sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+blue shark,"Crustaceans, small fishes, squid",Fish & squid (piscivorous),Mobile,High,Small fish,Small fish
+bluntnose sixgill shark,"Crustaceans, small fishes, squid","Fish, sharks, cephalopods, carrion",Mobile,High,Small fish,Small fish
+broadfin lanternfish,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+broadfin snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+bronzespotted rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+brown cat shark,"Crustaceans, small fishes, squid","Fish, squid, crustaceans",Mobile,High,Small fish,Small fish
+brown rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+buffalo sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+bull sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+butter sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+butterfish unident.,"Zooplankton, small crustaceans","Fish, squid & crustaceans",Resident,Medium,Plankton,Small fish
+calico rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+canary rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+copper rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+curlfin sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+darkblotched rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+deacon rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+deepsea skate,"Benthic micro-crustaceans, worms","Polychaetes, amphipods, small crustaceans & fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+deepsea smelt unident.,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+deepsea sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+deepwater eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+dogface witch eel,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+drum or croaker unident.,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+duckbill barracudina,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Mobile,Medium,Plankton,Small fish
+dusky sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+eelpout unident.,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+fantail sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+filetail cat shark,"Crustaceans, small fishes, squid","Fish, squid, crustaceans",Mobile,High,Small fish,Small fish
+fish unident.,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+flabby sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+flag rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+flathead sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+fringed sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+giant grenadier,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+giant sea bass,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+green sturgeon,"Benthic invertebrates (insect larvae, amphipods)","Benthic invertebrates (mollusks, crustaceans)",Mobile,Low,Plankton,Benthic invertebrates
+greenblotched rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+greenspotted rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+greenstriped rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+grenadier unident.,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+hagfish unident.,Small benthic invertebrates,"Carrion, polychaetes & small fish",Resident,Medium,Benthic invertebrates,Benthic invertebrates
+halfbanded rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+hatchetfish unident.,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+herring unident.,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+highfin dragonfish,Zooplankton & fish larvae,Fish & squid (mesopelagic predators),Mobile,High,Plankton,Small fish
+honeycomb rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+jack mackerel,"Zooplankton, small crustaceans","Fish, squid & crustaceans",Mobile,Medium,Plankton,Small fish
+kelp rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+king-of-the-salmon,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+lanternfish unident.,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+lizardfish unident.,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+longfin dragonfish,Zooplankton & fish larvae,Fish & squid (mesopelagic predators),Mobile,High,Plankton,Small fish
+longfin sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+longfin smelt,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+longnose cat shark,"Crustaceans, small fishes, squid","Fish, squid, crustaceans",Mobile,High,Small fish,Small fish
+longnose skate,"Benthic micro-crustaceans, worms","Polychaetes, amphipods, small crustaceans & fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+longnose snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+longspine combfish,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+longspine hatchetfish,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+longspine thornyhead,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+loosejaw unident.,Zooplankton & fish larvae,Fish & squid (mesopelagic predators),Mobile,High,Plankton,Small fish
+looseskin eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+manefish unident.,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+medusafish unident.,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+merluccid hake unident.,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+midwater eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+night smelt,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+northern anchovy,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+northern pearleye,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Mobile,Medium,Plankton,Small fish
+northern spearnose poacher,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+ocean whitefish,"Zooplankton, small crustaceans","Fish, squid & crustaceans",Mobile,Medium,Plankton,Small fish
+olive rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+pale snipe eel,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+pallid eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+paperbone cusk-eel,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+petrale sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+pink rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+pinkrose rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+plainfin midshipman,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+popeye grenadier,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+pygmy poacher,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+pygmy rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+quillback rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+rainbow smelt,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+red snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+redbanded rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+redstripe rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+rex sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+robust blacksmelt,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+rockfish unident.,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+rosethorn rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+rosy rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+rosy snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+roughback sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+rougheye and blackspotted rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,High,Plankton,Small fish
+roughtail skate,"Benthic micro-crustaceans, worms","Polychaetes, amphipods, small crustaceans & fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+round herring,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+rubynose brotula,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+sablefish,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Mobile,High,Plankton,Small fish
+sand sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+sandpaper skate,"Benthic micro-crustaceans, worms","Polychaetes, amphipods, small crustaceans & fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+sawtooth eel unident.,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+sculpin unident.,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+sharpchin rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+sharpchin slickhead,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+shiner perch,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+shining loosejaw,Zooplankton & fish larvae,Fish & squid (mesopelagic predators),Mobile,High,Plankton,Small fish
+shining tubeshoulder,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Mobile,Medium,Plankton,Small fish
+shortbelly rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+shortraker rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,High,Plankton,Small fish
+shortspine combfish,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+shortspine thornyhead,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+showy snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+silvergray rockfish,"Benthic micro-crustaceans, worms","Benthic invertebrates (crabs, mollusks); some fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+silvery hatchetfish,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+slender barracudina,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Mobile,Medium,Plankton,Small fish
+slender hatchetfish,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+slender snipe eel,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+slender sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+slim sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+slim snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+slipskin snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+smalldisk snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+smelt unident.,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+smooth grenadier,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+smooth stargazer,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+snailfish unident.,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+snakehead eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+snipe eel unident.,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+softhead grenadier,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+southern rock sole,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+speckled rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+splitnose rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+spotted cusk-eel,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+spotted ratfish,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+squarespot rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+starry flounder,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+starry rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+starry skate,"Benthic micro-crustaceans, worms","Polychaetes, amphipods, small crustaceans & fish",Resident,Low,Benthic invertebrates,Benthic invertebrates
+starsnout poacher unident.,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+striped kelpfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+stripetail rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+surf smelt,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+swell shark,"Crustaceans, small fishes, squid",Fish & squid (piscivorous),Mobile,High,Small fish,Small fish
+swellhead snailfish,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+swordspine rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+threadfin cusk-eel,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+threadfin sculpin,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+threadfin slickhead,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,Medium,Plankton,Small fish
+tonguefish unident.,"Planktonic crustaceans, amphipods","Benthic invertebrates (polychaetes, amphipods)",Resident,Low,Plankton,Benthic invertebrates
+tropical hatchetfish,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+tubeshoulder unident.,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Mobile,Medium,Plankton,Small fish
+twoline eelpout,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+vermilion and sunset rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+vermilion rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+walleye pollock,"Crustaceans (euphausiids, amphipods)","Fish, squid & larger invertebrates",Mobile,High,Plankton,Small fish
+warty poacher,"Small crustaceans (amphipods, copepods)",Benthic invertebrates; some small fish,Resident,Medium,Plankton,Benthic invertebrates
+west river lamprey,Detritus & micro-organisms (filter-feeding ammocoetes),Parasitic on fishes (blood & tissues),Mobile,Medium,Benthic invertebrates,Small fish
+white croaker,Small crustaceans & zooplankton,Generalist invertebrates & small fishes,Resident,Medium,Plankton,Small fish
+whitebait smelt,"Zooplankton (copepods, small crustaceans)","Zooplankton (copepods, krill)",Mobile,Low,Plankton,Plankton
+whitespotted rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+widow rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+wolf-eel,Small crustaceans & zooplankton,Hard-shelled invertebrates; some fish,Resident,High,Plankton,Small fish
+wolffish unident.,Small crustaceans & zooplankton,Hard-shelled invertebrates; some fish,Resident,High,Plankton,Small fish
+yelloweye rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,High,Plankton,Small fish
+yellowmouth rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
+yellowtail rockfish,"Crustaceans (mysids, copepods), zooplankton",Crustaceans & fish (generalist),Resident,Medium,Plankton,Small fish
