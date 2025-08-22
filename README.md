@@ -14,7 +14,7 @@ Our goal is to show how the new PACE (Plankton, Aerosol, Cloud, ocean Ecosystem)
 | Alberto Rivera   | Participant                |Scripps Institute of Oceanography       |[buzoAlberto]([url](https://github.com/buzoAlberto))     |alr052@ucsd.edu             | 
 | Isidora Rojas    | Participant                |Scripps Institute of Oceanography       |[isidora-rojas ]([url](https://github.com/isidora-rojas))  |i1rojas@ucsd.edu            |  
 | Max Titcomb      | Participant                |Scripps Institute of Oceanography       |[maxtitcomb]([url](https://github.com/maxtitcomb))      |mctitcomb@ucsd.edu          |
-|------------------|----------------------------|----------------------------------------|----------------|----------------------------|
+
 
 ## Planning
 
