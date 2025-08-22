@@ -6,6 +6,8 @@ library(readr)
 library(plotly)
 library(viridis)
 library(htmlwidgets)
+library(rnaturalearth)
+library(sf)
 
 cat("=== Unified 3D Spatial Chlorophyll-Larval Visualization ===\n")
 
@@ -100,8 +102,36 @@ symbol_palette <- list(
 chl_range <- range(combined_3d$color_var, na.rm = TRUE)
 cat("Chlorophyll range for color scale:", round(chl_range[1], 3), "to", round(chl_range[2], 3), "mg/m³\n")
 
+# Get California coastline for reference
+cat("Loading California coastline data...\n")
+california_coast <- ne_states(country = "United States of America", returnclass = "sf") %>%
+  filter(name == "California")
+
+# Extract coastline coordinates for 3D plotting
+coast_coords <- st_coordinates(california_coast)[,1:2]
+coast_df <- data.frame(
+  longitude = coast_coords[,1],
+  latitude = coast_coords[,2],
+  depth_m = 0  # Place coastline at surface
+)
+
 # Create the plot
 unified_plot <- plot_ly()
+
+# Add California coastline as reference
+unified_plot <- unified_plot %>%
+  add_trace(
+    data = coast_df,
+    x = ~longitude,
+    y = ~latitude,
+    z = ~depth_m,
+    type = "scatter3d",
+    mode = "lines",
+    name = "California Coast",
+    line = list(color = "black", width = 3),
+    showlegend = TRUE,
+    hovertemplate = "California Coastline<extra></extra>"
+  )
 
 # Add each data type as separate trace for better control
 for (data_type in unique(combined_3d$data_type)) {
@@ -172,7 +202,7 @@ unified_plot <- unified_plot %>%
         autorange = "reversed"  # Surface (0m) at top, deeper values below
       ),
       camera = list(
-        eye = list(x = 1.5, y = 1.5, z = 1.2)
+        eye = list(x = 1.5, y = -1.5, z = 1.2)  # Position camera to show North at top
       ),
       aspectmode = "manual",
       aspectratio = list(x = 1, y = 1, z = 0.8)
