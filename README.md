@@ -69,9 +69,9 @@ Our goal is to show how the new PACE (Plankton, Aerosol, Cloud, ocean Ecosystem)
 | Jon Peake        | Project Facilitator/Mentor |NOAA Fisheries Open Science             |[jonpeake]([url](https://github.com/jonpeake))        |jonathan.peake@noaa.gov     |
 | Sam Alaimo       | Participant                |Rutgers University                      |[salaimo26 ]([url](https://github.com/salaimo26))      |alaimo@marine.rutgers.edu   |
 | Israt Jahan Mili | Participant                |University of Massachusetts--Dartmouth  |[israt-mili]([url](https://github.com/israt-mili))      |mmili@umassd.edu            |
-| Alberto Rivera   | Participant                |Scripps Institute of Oceanography       |[buzoAlberto]([url](https://github.com/buzoAlberto))     |alr052@ucsd.edu             | 
-| Isidora Rojas    | Participant                |Scripps Institute of Oceanography       |[isidora-rojas ]([url](https://github.com/isidora-rojas))  |i1rojas@ucsd.edu            |  
-| Max Titcomb      | Participant                |Scripps Institute of Oceanography       |[maxtitcomb]([url](https://github.com/maxtitcomb))      |mctitcomb@ucsd.edu          |
+| Alberto Rivera   | Participant                |Scripps Institution of Oceanography       |[buzoAlberto]([url](https://github.com/buzoAlberto))     |alr052@ucsd.edu             | 
+| Isidora Rojas    | Participant                |Scripps Institution of Oceanography       |[isidora-rojas ]([url](https://github.com/isidora-rojas))  |i1rojas@ucsd.edu            |  
+| Max Titcomb      | Participant                |Scripps Institution of Oceanography       |[maxtitcomb]([url](https://github.com/maxtitcomb))      |mctitcomb@ucsd.edu          |
 
 
 ## Planning
