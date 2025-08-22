@@ -22,7 +22,7 @@ Our goal is to show how the new PACE (Plankton, Aerosol, Cloud, ocean Ecosystem)
 -   Final idea: Predict adult fish distributions from PACE chlorophyll and absorption data and compare to predictions from MODIS chlorophyll data
 -   Ideation Presentation: [Link](https://docs.google.com/presentation/d/1oRBbjYOHBqAwBdsVWctXN-ScwihK1mItiyZXgEEFPC4/edit?usp=sharing)
 -   Slack channel: ohw25_proj_fishy
--   Final presentation: [Link]([url](https://docs.google.com/presentation/d/1oRBbjYOHBqAwBdsVWctXN-ScwihK1mItiyZXgEEFPC4/edit?usp=sharing))
+-   Final presentation: [Link](https://docs.google.com/presentation/d/1oRBbjYOHBqAwBdsVWctXN-ScwihK1mItiyZXgEEFPC4/edit?usp=sharing)
 
 ## Background
 
