@@ -1,4 +1,3 @@
-=======
 # FisHy PACE: Predicting fish distributions from phytoplankton using hyperspectral satellite data
 
 ## Project Description
@@ -99,4 +98,3 @@ TBD
 -   CalCOFI (2024). California Cooperative Oceanic Fisheries Investigation (CalCOFI). Retrieved from [http://www.calcofi.org](http://www.calcofi.org/)
 
 -   US DOC/NOAA/NMFS. Zooplankton and ichthyoplankton abundance and distribution in the North Atlantic collected by the Ecosystem Monitoring (EcoMon) Project. NOAA National Centers for Environmental Information. [https://www.ncei.noaa.gov/archive/accession/0187513](#0).
->>>>>>> origin/main
