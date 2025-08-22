@@ -33,7 +33,7 @@ library(patchwork)
 
 #Examine Trawl Sites
 ```{r}
-haul <- pull_haul(survey = "NWFSC.Combo")
+haul <- pull_haul(survey = "NWFSC.Combo", years = c(2023, 2050))
 write_csv(haul, "haul_data.csv")
 
 trawl_sites <- haul %>%
@@ -41,21 +41,42 @@ trawl_sites <- haul %>%
 
 world <- map_data("world")
 
-ggplot() +
-  geom_polygon(data = world, aes(x = long, y = lat, group = group),
-               fill = "gray90", color = "gray60") +
-  geom_point(data = trawl_sites, aes(x = longitude_dd, y = latitude_dd),
-             color = "red", size = 2, alpha = 0.7) +
-  coord_quickmap(
-    xlim = range(trawl_sites$longitude_dd, na.rm = TRUE) + c(-2, 2),  # add buffer
-    ylim = range(trawl_sites$latitude_dd, na.rm = TRUE) +  c(-2, 2)
+p <- ggplot() +
+  # land polygons
+  geom_polygon(
+    data = world,
+    aes(x = long, y = lat, group = group),
+    fill = "white",   # off white land
+    color = "gray60"
   ) +
-  labs(title = "Survey Sites", x = "Longitude", y = "Latitude") +
-  theme_minimal()
+  # trawl points with fill + outline
+  geom_point(
+    data = trawl_sites,
+    aes(x = longitude_dd, y = latitude_dd),
+    shape = 21,                 # circle with outline
+    fill = "yellow2",           # inside color
+    color = "goldenrod4",       # darker outline
+    size = 2,
+    alpha = 0.2,                # translucency for fill
+    stroke = 0.3                # outline thickness
+  ) +
+  # coordinate system with buffer
+  coord_quickmap(
+    xlim = range(trawl_sites$longitude_dd, na.rm = TRUE) + c(-2, 2),
+    ylim = range(trawl_sites$latitude_dd, na.rm = TRUE) + c(-2, 2)
+  ) +
+  labs(
+    title = "Trawl Sites",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "lightblue3", color = NA) # ocean
+  )
 
-#write_csv(trawl_sites, "ne_trawl_sites.csv")
+ggsave("survey_sites_map.png", p, width = 8, height = 6, dpi = 300)
 ```
-
 
 #Catch Data Agg
 ```{r}
@@ -65,6 +86,7 @@ life_history <- read_csv("ne_fish_life_history.csv")
 fish_names <- life_history$Common_name
 
 catch_data <- pull_catch("NWFSC.Combo", common_name = NULL, sci_name = NULL, years = c(2023, 2050))
+write_csv(catch_data, "catch_data.csv")
 catch_data <- catch_data %>%
   filter(as.Date(Date) >= as.Date("2024-04-11"),Common_name %in% fish_names)
 #Add CPUE metric for numbers of individuals per hectare.
@@ -91,11 +113,23 @@ catch_data <- catch_data %>%
   # Count distinct trawls with nonzero catch
   mutate(n_trawls = n_distinct(Trawl_id)) %>%
   ungroup() %>%
-  # Keep species present in >= 20 such trawls
-  filter(n_trawls >= 10) %>%
-  select(-n_trawls)
+  # Keep species present in >= 50 such trawls
+  filter(n_trawls >= 50)
 
+#table(catch_data_test$Common_name)
 ```
+
+#Species numbers
+```{r}
+species_trawl_counts <- catch_data %>%
+  filter(total_catch_numbers > 0) %>%                 # only positive catches
+  group_by(Common_name) %>%
+  summarise(n_trawls = n_distinct(Trawl_id), .groups = "drop") %>%
+  arrange(desc(n_trawls))   # sort high → low
+
+head(species_trawl_counts, 5)
+```
+
 
 #Pivot wide
 ```{r}
@@ -567,6 +601,27 @@ final_plot
 ggsave("spotted_ratfish_model_results.png", final_plot, width = 12, height = 10, dpi = 600)
 ```
 
+
+#Residual checking
+```{r}
+
+# bsb$resids <- residuals(fit) # randomized quantile residuals
+# # d$resids <- residuals(m, type = "mle-mcmc") # better but slower
+# hist(bsb$resids)
+# 
+# qqnorm(bsb$resids)
+# abline(a = 0, b = 1)
+# 
+# ggplot(bsb, aes(Lon.km, Lat.km, col = resids)) + scale_colour_gradient2() +
+#   geom_point() + facet_wrap(~year) + coord_fixed()
+# 
+# visreg(fit,data=bsb,
+#                type = "conditional")
+# 
+# # on the response scale
+# visreg::visreg(fit, xvar = "depth", scale = "response")
+```
+
 #Efficient version
 ```{r}
 # --- Packages ---
@@ -1013,11 +1068,15 @@ for (i in seq_along(species_cols)) {
       title = paste0(pretty_species(sp), " — Estimates of CPUE (individuals per ha)"),
       tag_levels = "A"
     )
-
+  ggsave(
+    filename = file.path(outdir, paste0(sp, "_map_plot.png")),
+    plot = map_p,
+    width = 8, height = 10, dpi = 400
+  )
   ggsave(
     filename = file.path(outdir, paste0(sp, "_final_plot.png")),
     plot = final_plot,
-    width = 12, height = 10, dpi = 600
+    width = 10, height = 8, dpi = 400
   )
   # --------------------------------------------------------------
 }
@@ -1054,6 +1113,22 @@ ggplot(coef_plot_data,
     title = "Species-specific effect of chlorophyll-a"
   ) +
   theme_minimal()
+
+#Fix name capitilizations
+life_history <- life_history %>%
+  mutate(Common_name = str_to_title(Common_name))
+catch_data <- catch_data %>%
+  mutate(Common_name = str_to_title(Common_name))
+unique(life_history$Common_name)
+unique(catch_data$Common_name)
+
+
+final_plot_data <- catch_data %>%
+  left_join(
+    life_history %>% 
+      select(Common_name, Dominant_movement, juv_prey_category, adult_prey_category),
+    by = "Common_name"
+  )
 ```
 
 
