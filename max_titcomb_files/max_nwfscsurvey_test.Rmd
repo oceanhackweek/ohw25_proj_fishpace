@@ -1,0 +1,358 @@
+---
+title: "max_nwfscsurvey_test"
+output: html_document
+date: "2025-08-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Data pulled from: https://pfmc-assessments.github.io/nwfscSurvey/
+#install.packages("remotes")
+#remotes::install_github("pfmc-assessments/nwfscSurvey")
+library(nwfscSurvey)
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(readr)
+library(ggplot2)
+library(maps)
+library(sf)
+
+```
+
+#Examine Trawl Sites
+```{r}
+haul <- pull_haul(survey = "NWFSC.Combo")
+
+trawl_sites <- haul %>%
+  select(latitude_dd, longitude_dd, trawl_id, date_formatted, datetime_utc_iso)
+
+world <- map_data("world")
+
+ggplot() +
+  geom_polygon(data = world, aes(x = long, y = lat, group = group),
+               fill = "gray90", color = "gray60") +
+  geom_point(data = trawl_sites, aes(x = longitude_dd, y = latitude_dd),
+             color = "red", size = 2, alpha = 0.7) +
+  coord_quickmap(
+    xlim = range(trawl_sites$longitude_dd, na.rm = TRUE) + c(-2, 2),  # add buffer
+    ylim = range(trawl_sites$latitude_dd, na.rm = TRUE) +  c(-2, 2)
+  ) +
+  labs(title = "Survey Sites", x = "Longitude", y = "Latitude") +
+  theme_minimal()
+
+#write_csv(trawl_sites, "ne_trawl_sites.csv")
+```
+
+
+#Catch Data Agg
+```{r}
+#import life history
+life_history <- read_csv("ne_fish_life_history.csv")
+
+fish_names <- life_history$Common_name
+
+catch_data <- pull_catch("NWFSC.Combo", common_name = NULL, sci_name = NULL, years = c(2023, 2050))
+catch_data <- catch_data %>%
+  filter(as.Date(Date) >= as.Date("2024-04-11"),
+         Common_name %in% fish_names)
+#Add CPUE metric for numbers of individuals per hectare.
+catch_data <- catch_data %>%
+  mutate(cpue_numbers_per_ha_der = ifelse(
+    Area_swept_ha > 0,
+    total_catch_numbers / Area_swept_ha,
+    NA_real_
+  ))
+
+#Add life history
+catch_data <- catch_data %>%
+  left_join(
+    life_history %>% 
+      select(Common_name, Dominant_movement, juv_prey_category, adult_prey_category),
+    by = "Common_name"
+  )
+
+#Filter out species not present in many trawls
+catch_data <- catch_data %>%
+  # Keep only rows where catch > 0
+  filter(total_catch_numbers > 0) %>%
+  group_by(Common_name) %>%
+  # Count distinct trawls with nonzero catch
+  mutate(n_trawls = n_distinct(Trawl_id)) %>%
+  ungroup() %>%
+  # Keep species present in >= 20 such trawls
+  filter(n_trawls >= 10) %>%
+  select(-n_trawls)
+
+```
+
+#Pivot wide
+```{r}
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+# 1) One-row-per-trawl metadata from haul
+haul_meta <- haul %>%
+  distinct(trawl_id, .keep_all = TRUE)
+haul_meta <- haul_meta %>%
+  rename("Trawl_id" = "trawl_id")
+
+# 2) Pivot species metrics wide (no need to summarise since no duplicates per trawl/species)
+species_wide <- catch_data %>%
+  select(Trawl_id, Common_name,
+         total_catch_numbers, cpue_kg_per_ha_der, cpue_numbers_per_ha_der) %>%
+  pivot_wider(
+    id_cols    = Trawl_id,
+    names_from = Common_name,
+    values_from = c(total_catch_numbers, cpue_kg_per_ha_der, cpue_numbers_per_ha_der),
+    names_glue = "{Common_name}_{.value}",
+    values_fill = 0
+  ) %>%
+  mutate(
+    across(
+      ends_with("total_catch_numbers"),
+      ~ as.integer(. > 0),
+      .names = "{sub('_total_catch_numbers$', '', .col)}_presence"
+    )
+  )
+
+# 3) Join metadata and reorder: metadata first, then species columns (alphabetized)
+catch_data_wide <- haul_meta %>%
+  inner_join(species_wide, by = "Trawl_id")
+
+meta_cols    <- names(haul_meta)
+species_cols <- setdiff(names(catch_data_wide), meta_cols)
+
+catch_data_wide <- catch_data_wide %>%
+  select(all_of(meta_cols), sort(species_cols))
+
+catch_data_extraction <- catch_data_wide%>%
+  select(latitude_dd, longitude_dd, Trawl_id, date_formatted, datetime_utc_iso)
+catch_data_extraction <- catch_data_extraction %>%
+  mutate(date_sheets = format(as.Date(date_formatted, format = "%Y-%b-%d"), "%Y-%m-%d"))
+write_csv(catch_data_extraction, "catch_data_extraction.csv")
+
+
+
+```
+
+
+
+
+
+#Make a prediction grid (np.meshgrid in python)
+
+
+
+```{r}
+pick_ca_utm <- function(mid_lon) {
+  if (mid_lon < -120) 32610 else 32611  # Zone 10N
+}
+
+make_km_grid_ca <- function(lat1, lon1, lat2, lon2,
+                            spacing_m = 1000,
+                            return = c("points", "polygons"),
+                            epsg_utm = "auto_ca") {
+  return <- match.arg(return)
+
+  # 1) bbox in WGS84
+  min_lon <- min(lon1, lon2); max_lon <- max(lon1, lon2)
+  min_lat <- min(lat1, lat2); max_lat <- max(lat1, lat2)
+  bbox_wgs84 <- st_as_sfc(st_bbox(c(xmin = min_lon, ymin = min_lat,
+                                    xmax = max_lon, ymax = max_lat),
+                                  crs = 4326))
+
+  # 2) pick CA UTM
+  if (identical(epsg_utm, "auto_ca")) {
+    mid_lon <- (min_lon + max_lon) / 2
+    epsg_utm <- pick_ca_utm(mid_lon)
+  }
+  crs_utm <- st_crs(epsg_utm)
+
+  # 3) project bbox, build grid in meters
+  bbox_utm <- st_transform(bbox_wgs84, crs_utm)
+  grid_polys_utm <- st_make_grid(bbox_utm, cellsize = spacing_m, square = TRUE) |>
+    st_as_sf() |>
+    dplyr::rename(geometry = x) |>
+    dplyr::mutate(grid_id = dplyr::row_number())
+
+  # 4) return polygons or centroids, back to WGS84
+  if (return == "polygons") {
+    out <- st_transform(grid_polys_utm, 4326)
+  } else {
+    out <- st_transform(st_centroid(grid_polys_utm), 4326)
+  }
+  out
+}
+
+catch_sf <- st_as_sf(
+  catch_data_wide,
+  coords = c("longitude_dd", "latitude_dd"),
+  crs = 4326
+)
+
+bb <- st_bbox(catch_sf)  # xmin=lon_min, xmax=lon_max, ymin=lat_min, ymax=lat_max
+
+grid_pts <- make_km_grid_ca(
+  lat1 = as.numeric(bb["ymin"]),
+  lon1 = as.numeric(bb["xmin"]),
+  lat2 = as.numeric(bb["ymax"]),
+  lon2 = as.numeric(bb["xmax"]),
+  spacing_m = 1000,
+  return = "points"
+)
+
+# Quick check
+print(st_crs(grid_pts))   # EPSG:4326
+plot(st_geometry(grid_pts), pch = 16, cex = 0.2)
+```
+
+
+```{r}
+# extent <- sf::read_sf(here("/Users/maxtitcomb/Documents/research/first_year_project/code_v2/data/gis_data_raw/tnc_habitat_extent_caribbean/tnc_habitat_extent_caribbean.shp"))
+# extent <- st_transform(extent, crs = chosen_crs)
+# 
+# 
+# # ggplot(extent) +
+# #   geom_sf() +
+# #   geom_sf(data = survey, size = 0.5)
+# 
+# # create a polygon based off the mesh boundaries
+# new_poly <- st_convex_hull(st_union(grouper_barrier_mesh$mesh_sf))
+# plot(new_poly)
+# st_crs(new_poly)
+# 
+# # remove land from polygon
+# poly <- st_difference(new_poly, na_coast_proj)
+# st_crs(poly) 
+# plot(poly)
+# st_bbox(poly)
+# 
+# resolution <- 8000 # poly is in meters; 2000 is pretty fine: 2000m x 2000m = 4 km2
+# r <- raster::raster(as(extent, "Spatial"), resolution = resolution)
+# rr <- raster::rasterize(as(extent, "Spatial"), r, getCover = TRUE)
+# plot(rr)
+```
+
+
+#Set up SDMtmb model
+```{r}
+catch_data_wide
+
+nw_formula <- " ~1"
+
+model_species_data <- function(species_formula, data, presence_col, mesh, extra_time, spatial) {
+  # Ensure the presence column is correctly referenced
+  formula <- as.formula(paste(presence_col, species_formula))
+  
+  # Build the species distribution model
+  model <- sdmTMB(
+    formula = formula,
+    data = data,
+    mesh = mesh,
+    family = binomial(link = "logit"),
+    spatial = spatial,
+    time = "year_numeric",
+    spatiotemporal = "AR1",
+    silent = FALSE,
+    extra_time = extra_time
+  )
+  
+  return(model)
+}
+```
+
+
+
+
+##################################################################################################
+
+
+```{r}
+
+#Functions
+ls("package:nwfscSurvey")
+
+#Get all species
+species_list <- GetSppDefault.fn()
+
+haul <- pull_haul(survey = "NWFSC.Combo")
+
+#Test
+catch = pull_catch(
+  common_name = "Pacific ocean perch", 
+  survey = "NWFSC.Combo")
+bio = pull_bio(
+  common_name = "Pacific ocean perch", 
+  survey = "NWFSC.Combo")
+
+#Filter to when Pace data starts
+catch <- catch%>%
+  filter(as.Date(Date) >= as.Date("2024-04-11"))
+unique(catch$Date)
+
+bio <- bio%>%
+  filter(as.Date(Date) >= as.Date("2024-04-11"))
+unique(bio$Date)
+
+
+plot_cpue(
+  catch = catch)
+
+PlotMap.fn(
+  dat = catch)
+```
+#Iterated code
+```{r}
+# catch = pull_catch(
+#   common_name = "Yellowtail rockfish", 
+#   survey = "NWFSC.Combo", years = c(2023,2050))
+
+# species + pretty labels
+species_list <- GetSppDefault.fn()
+pretty_map <- setNames(
+  paste0(toupper(substring(gsub("_"," ", species_list),1,1)),
+         substring(gsub("_"," ", species_list),2)),
+  species_list
+)
+labels <- unname(pretty_map)
+
+# safe fetch (NULL on error/no catches)
+safe_pull_catch <- possibly(
+  function(lbl) pull_catch(common_name = lbl, survey = "NWFSC.Combo", years = c(2023, 2050)),
+  otherwise = NULL
+)
+
+# 1) pull  2) drop NULL  3) date-filter  4) drop empties  -> names always in sync
+catch_raw   <- set_names(map(labels, safe_pull_catch), labels)
+catch_nonNA <- discard(catch_raw, is.null)
+catch_filt  <- map(catch_nonNA, ~ filter(.x, as.Date(Date) >= as.Date("2024-04-11")))
+catch_list  <- discard(catch_filt, ~ nrow(.x) == 0)   # <-- final named list
+
+catch_all <- list_rbind(imap(catch_list, ~ mutate(.x, species = .y)))
+
+PlotMap.fn(
+  dat = catch_filt$`Dover sole`)
+
+
+dir.create("plots_cpue", showWarnings = FALSE)
+
+
+pull_catch()
+```
+
+
+
+
+
+#All Survey Sites
+
+
+
+
+
+
