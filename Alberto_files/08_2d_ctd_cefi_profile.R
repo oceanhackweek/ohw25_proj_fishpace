@@ -127,76 +127,15 @@ profile_plot <- ggplot(profile_data, aes(x = mean_chl, y = depth_center, color =
   theme_minimal() +
   theme(
     plot.title = element_text(size = 14, face = "bold"),
-    plot.subtitle = element_text(size = 12),
-    legend.position = "bottom",
-    panel.grid.minor = element_blank()
-  ) +
-  coord_cartesian(xlim = c(0, max(profile_data$mean_chl + profile_data$sd_chl, na.rm = TRUE) * 1.1))
-
-# 2. Scatter plot comparison at different depths
-scatter_data <- profile_data %>%
-  select(depth_center, mean_chl, data_source) %>%
-  pivot_wider(names_from = data_source, values_from = mean_chl) %>%
-  filter(!is.na(`CTD Observation`), !is.na(`CEFI COBALT Model`))
-
-if (nrow(scatter_data) > 0) {
-  scatter_plot <- ggplot(scatter_data, aes(x = `CTD Observation`, y = `CEFI COBALT Model`)) +
-    geom_point(aes(color = depth_center), size = 3, alpha = 0.8) +
-    geom_smooth(method = "lm", se = TRUE, color = "black", linetype = "dashed") +
-    geom_abline(slope = 1, intercept = 0, color = "red", linetype = "solid", alpha = 0.7) +
-    scale_color_viridis_c(name = "Depth (m)", trans = "reverse") +
-    labs(
-      title = "CTD vs CEFI COBALT Chlorophyll Comparison",
-      subtitle = "1:1 line (red) vs fitted relationship (dashed)",
-      x = "CTD Observed Chlorophyll-a (mg/m³)",
-      y = "CEFI COBALT Model Chlorophyll-a (mg/m³)"
-    ) +
-    theme_minimal() +
-    theme(
-      plot.title = element_text(size = 14, face = "bold"),
-      plot.subtitle = element_text(size = 12)
-    )
-  
-  # Calculate correlation
-  correlation <- cor(scatter_data$`CTD Observation`, scatter_data$`CEFI COBALT Model`, use = "complete.obs")
-  cat("Correlation between CTD and CEFI chlorophyll:", round(correlation, 3), "\n")
-} else {
-  scatter_plot <- ggplot() + 
-    annotate("text", x = 0.5, y = 0.5, label = "No overlapping depth bins for comparison") +
-    theme_void()
-}
-
-# 3. Sample distribution by depth
-sample_dist <- profile_data %>%
-  ggplot(aes(x = n_obs, y = depth_center, fill = data_source)) +
-  geom_col(position = "dodge", alpha = 0.8) +
-  scale_fill_manual(values = c("CTD Observation" = "#2E8B57", "CEFI COBALT Model" = "#FF6347")) +
-  scale_y_continuous(trans = "reverse", breaks = seq(0, 200, 25)) +  # Explicit reverse transformation with breaks
-  labs(
-    title = "Sample Distribution by Depth",
-    x = "Number of Observations",
-    y = "Depth (m) - Surface to Deep",
-    fill = "Data Source"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(size = 14, face = "bold"),
     legend.position = "bottom"
   )
 
-# Combine plots
-combined_plot <- (profile_plot | scatter_plot) / sample_dist +
-  plot_layout(heights = c(2, 1)) +
-  plot_annotation(
-    title = "2D CTD-CEFI Chlorophyll Profile Analysis",
-    subtitle = "Observational vs Model Chlorophyll-a in the California Current System",
-    theme = theme(plot.title = element_text(size = 16, face = "bold"))
-  )
+# Save only the profile plot
+ggsave("2d_ctd_cefi_chlorophyll_profiles.png", profile_plot, 
+       width = 10, height = 8, dpi = 300, bg = "white")
 
-# Save the plot
-ggsave("2d_ctd_cefi_chlorophyll_profiles.png", combined_plot, 
-       width = 14, height = 10, dpi = 300, bg = "white")
 cat("✓ Saved: 2d_ctd_cefi_chlorophyll_profiles.png\n")
+
 
 # Generate summary statistics
 cat("\n--- 2D Profile Analysis Summary ---\n")
@@ -239,8 +178,5 @@ if (exists("correlation")) {
 }
 
 cat("\n📊 2D CTD-CEFI Profile Analysis Complete!\n")
-cat("Generated comprehensive depth profile comparison:\n")
-cat("  • Depth profiles with uncertainty bands\n")
-cat("  • CTD vs CEFI scatter plot with correlation\n")
-cat("  • Sample distribution by depth\n")
+cat("Generated depth profile comparison showing chlorophyll vs depth.\n")
 cat("File saved as: 2d_ctd_cefi_chlorophyll_profiles.png\n")
