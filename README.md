@@ -4,18 +4,17 @@
 
 Our goal is to show how the new PACE (Plankton, Aerosol, Cloud, ocean Ecosystem) dataset can enhance our ability to predict species distributions.
 
-## Planning
-
 ## Collaborators
 
-| Name             | Role                       |
-|------------------|----------------------------|
-| Jon Peake        | Project Facilitator/Mentor |
-| Sam Alaimo       | Participant                |
-| Israt Jahan Mili | Participant                |
-| Alberto Rivera   | Participant                |
-| Isidora Rojas    | Participant                |
-| Max Titcomb      | Participant                |
+| Name             | Role                       | Affiliation                            |  Github        |  Email                     |
+|------------------|----------------------------|----------------------------------------|--------------- |----------------------------|
+| Jon Peake        | Project Facilitator/Mentor |NOAA Fisheries Open Science             |[jonpeake]([url](https://github.com/jonpeake))        |jonathan.peake@noaa.gov     |
+| Sam Alaimo       | Participant                |Rutgers University                      |[salaimo26 ]([url](https://github.com/salaimo26))      |alaimo@marine.rutgers.edu   |
+| Israt Jahan Mili | Participant                |University of Massachusetts--Dartmouth  |[israt-mili]([url](https://github.com/israt-mili))      |mmili@umassd.edu            |
+| Alberto Rivera   | Participant                |Scripps Institute of Oceanography       |[buzoAlberto]([url](https://github.com/buzoAlberto))     |alr052@ucsd.edu             | 
+| Isidora Rojas    | Participant                |Scripps Institute of Oceanography       |[isidora-rojas ]([url](https://github.com/isidora-rojas))  |i1rojas@ucsd.edu            |  
+| Max Titcomb      | Participant                |Scripps Institute of Oceanography       |[maxtitcomb]([url](https://github.com/maxtitcomb))      |mctitcomb@ucsd.edu          |
+
 
 ## Planning
 
