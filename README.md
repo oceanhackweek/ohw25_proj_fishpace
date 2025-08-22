@@ -31,25 +31,25 @@ PACE (Plankton, Aerosol, Cloud, ocean Ecosystem) is NASA's newest earth-observin
 
 ## Goals
 
-1.  Create species distribution models using Chlorophyll-A data from PACE and MODIS across larval and adult stages of fish.
+1.  Establish and proof of concept between the ROMS Chlorophyll-A model and CalCOFI datasets
 
-2.  Compare the predictive ability of Chlorophyll-A from PACE and MODIS.
+2.  Create species distribution models using Chlorophyll-A data from PACE across adult stages of fish.
 
-3.  Assess differences in effect sizes between PACE Chlorophyll-A and absorbance to determine whether absorbance is a better predictor of fish occurrence than Chlorophyll
+3.  Compare the predictive ability of Chlorophyll-A from PACE.
 
-4.  (If time permits) Assess differences in Chlorophyll-A effect size between the Pacific and Atlantic datasets
+4.  Assess differences in effect sizes between PACE Chlorophyll-A and absorbance to determine whether absorbance is a better predictor of fish occurrence than Chlorophyll
+
+5.  (If time permits) Assess differences in Chlorophyll-A effect size between the Pacific and Atlantic datasets
 
 ## Datasets
 
 -   PACE Chlorophyll-A
 
--   MODIS Chlorophyll-A
-
 -   Federal Bottom Trawl Survey (NW and NE)
 
--   CalCOFI
+-   CalCOFI (West Coast Larval Dataset)
 
--   EcoMON
+-   EcoMON (East Coast Larval Dataset)
 
 ## Workflow/Roadmap
 
@@ -58,6 +58,17 @@ PACE (Plankton, Aerosol, Cloud, ocean Ecosystem) is NASA's newest earth-observin
 First, we pulled data from the bottom trawl fish datasets (NEFSC, NWFSC) and the larval fish datasets (CalCOFI, EcoMON) for the east and west coasts. We identified the area and temporal extent/resolution of each dataset to determine the spatiotemporal limits of our project. We then pulled Chlorophyll-A data from PACE and MODIS, specifying the boundaries and temporal extent for the area and years of interest. We additionally pulled absorbance data from the PACE dataset and environmental data taken at time of sample from the trawl datasets.
 
 ### 2. Data preparation
+
+Trawl Data: Trawl data was prepared by subsetting only the fish species that were caught in the surveys. We focused on year 2024 to match the PACE data range. 
+  
+  East Coast: Since the biological and environmental data is in separate .csv files, these two were merged together with Latitude, Longitude, Surface and Bottom Temperature, Surface and Bottom Salinity and Average Depth.
+  selected. The final data frame consisted of rows corresponding to each individual trawl ID and columns corresponding to a species caught in the trawl, and the environmental data associated with each respective trawl ID.
+
+  West Coast: 
+  
+Larval Data: 
+
+PACE Data: 
 
 ### 3. Model training
 
