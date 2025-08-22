@@ -88,122 +88,55 @@ integrate_larval_chlorophyll <- function(larval_data, cefi_data, ctd_data) {
     return(NULL)
   }
   
-  # Use CEFI COBALT chlorophyll data if available
-  if (!is.null(cefi_data) && nrow(cefi_data) > 0) {
-    cat("Using CEFI COBALT chlorophyll data...\n")
-    
-    # CEFI data has columns: longitude, latitude, depth_m, time, chlorophyll_mg_m3
-    # Create depth-based summaries for integration with larval data
-    integrated_data <- cefi_data %>%
-      mutate(
-        cefi_chl_surface = ifelse(depth_m <= 10, chlorophyll_mg_m3, NA),
-        cefi_chl_subsurface = ifelse(depth_m > 10 & depth_m <= 50, chlorophyll_mg_m3, NA),
-        cefi_chl_intermediate = ifelse(depth_m > 50 & depth_m <= 100, chlorophyll_mg_m3, NA),
-        cefi_chl_deep = ifelse(depth_m > 100, chlorophyll_mg_m3, NA),
-        cefi_chl_mean = chlorophyll_mg_m3
-      )
-      
-    cat("✓ Loaded integrated CEFI COBALT data:", nrow(integrated_data), "records\n")
-    return(integrated_data)
+  # This section was removed - continue to spatial-temporal matching below
+  
+  # Real data only: Require CEFI COBALT chlorophyll data
+  if (is.null(cefi_data) || nrow(cefi_data) == 0) {
+    cat("✗ No CEFI COBALT chlorophyll data available\n")
+    cat("  Please run 03_cefi_roms_chlorophyll_access.R first\n")
+    cat("  Following real-data-only rule - no synthetic or fallback data\n")
+    return(NULL)
   }
   
-  # Fallback: Use existing CTD-ROMS combined data if available
-  if (!is.null(ctd_data) && nrow(ctd_data) > 0) {
-    cat("Fallback: Using existing CTD-ROMS chlorophyll data...\n")
-    
-    # The CTD data file already contains integrated larval-CTD-ROMS data
-    integrated_data <- ctd_data %>%
-      mutate(
-        # Create depth zone summaries from existing data
-        roms_chl_surface = ifelse(ctd_depth <= 10, roms_chlorophyll, NA),
-        roms_chl_subsurface = ifelse(ctd_depth > 10 & ctd_depth <= 50, roms_chlorophyll, NA),
-        roms_chl_deep = ifelse(ctd_depth > 50, roms_chlorophyll, NA),
-        roms_chl_mean = roms_chlorophyll,
-        
-        ctd_chl_surface = ifelse(ctd_depth <= 10, ctd_chlorophyll, NA),
-        ctd_chl_subsurface = ifelse(ctd_depth > 10 & ctd_depth <= 50, ctd_chlorophyll, NA), 
-        ctd_chl_deep = ifelse(ctd_depth > 50, ctd_chlorophyll, NA),
-        ctd_chl_mean = ctd_chlorophyll
-      )
-    
-    cat("✓ Loaded integrated CTD-ROMS data:", nrow(integrated_data), "records\n")
-    return(integrated_data)
-  }
-  
-  # Fallback: Start with larval data as base and try to add CEFI chlorophyll data
-  integrated_data <- larval_data
-  
-  # Add CEFI chlorophyll if available (raw 3D data)
-  if (!is.null(cefi_data) && nrow(cefi_data) > 0 && "chlorophyll_mg_m3" %in% names(cefi_data)) {
-    cat("Integrating CEFI COBALT chlorophyll data...\n")
+  # Use CEFI COBALT data as primary source (real data only)
+  cat("Integrating CEFI COBALT chlorophyll with larval data...\n")
     
     # Match by location and time (with tolerance)
     cefi_summary <- cefi_data %>%
       mutate(
-        match_lat = round(latitude, 2),
-        match_lon = round(longitude, 2),
-        match_date = as.Date(time)
+        match_lat = round(latitude, 1),  # Use 0.1° tolerance (~11km)
+        match_lon = round(longitude, 1),
+        match_year = as.numeric(format(as.Date(time, origin = "1970-01-01"), "%Y"))
       ) %>%
-      group_by(match_lat, match_lon, match_date) %>%
+      group_by(match_lat, match_lon, match_year) %>%
       summarise(
         cefi_chl_surface = mean(chlorophyll_mg_m3[depth_m <= 10], na.rm = TRUE),
         cefi_chl_subsurface = mean(chlorophyll_mg_m3[depth_m > 10 & depth_m <= 50], na.rm = TRUE),
         cefi_chl_intermediate = mean(chlorophyll_mg_m3[depth_m > 50 & depth_m <= 100], na.rm = TRUE),
-        cefi_chl_deep = mean(chlorophyll_mg_m3[depth_m > 100], na.rm = TRUE),
+        cefi_chl_deep = mean(chlorophyll_mg_m3[depth_m > 100 & depth_m <= 200], na.rm = TRUE),
         cefi_chl_mean = mean(chlorophyll_mg_m3, na.rm = TRUE),
         .groups = "drop"
       )
     
     # Match with larval data
-    integrated_data <- integrated_data %>%
+    integrated_data <- larval_data %>%
       mutate(
-        match_lat = round(latitude, 2),
-        match_lon = round(longitude, 2),
-        match_date = date
+        match_lat = round(latitude, 1),  # Use 0.1° tolerance (~11km)
+        match_lon = round(longitude, 1),
+        match_year = as.numeric(format(date, "%Y"))
       ) %>%
-      left_join(cefi_summary, by = c("match_lat", "match_lon", "match_date")) %>%
-      select(-match_lat, -match_lon, -match_date)
+      left_join(cefi_summary, by = c("match_lat", "match_lon", "match_year")) %>%
+      select(-match_lat, -match_lon, -match_year)
     
-    cefi_matches <- sum(!is.na(integrated_data$cefi_chl_mean))
-    cat("✓ CEFI COBALT chlorophyll matched to", cefi_matches, "larval records\n")
-  }
+  cefi_matches <- sum(!is.na(integrated_data$cefi_chl_mean))
+  cat("✓ CEFI COBALT chlorophyll matched to", cefi_matches, "larval records\n")
   
-  # Add missing CEFI columns with NA if no data was joined
-  if (!"cefi_chl_surface" %in% names(integrated_data)) {
-    integrated_data$cefi_chl_surface <- NA_real_
-    integrated_data$cefi_chl_subsurface <- NA_real_
-    integrated_data$cefi_chl_intermediate <- NA_real_
-    integrated_data$cefi_chl_deep <- NA_real_
-    integrated_data$cefi_chl_mean <- NA_real_
-  }
-  
-  # Add missing CTD columns with NA if no data was joined
-  if (!"ctd_chl_surface" %in% names(integrated_data)) {
-    integrated_data$ctd_chl_surface <- NA_real_
-    integrated_data$ctd_chl_subsurface <- NA_real_
-    integrated_data$ctd_chl_deep <- NA_real_
-    integrated_data$ctd_chl_mean <- NA_real_
-    integrated_data$ctd_fluorescence_mean <- NA_real_
-  }
-  
-  # Calculate chlorophyll differences and ratios (CEFI vs CTD)
+  # Add data availability flags (real data only - CEFI COBALT)
   integrated_data <- integrated_data %>%
     mutate(
-      # Chlorophyll differences (CEFI - CTD)
-      chl_diff_surface = cefi_chl_surface - ctd_chl_surface,
-      chl_diff_subsurface = cefi_chl_subsurface - ctd_chl_subsurface,
-      chl_diff_mean = cefi_chl_mean - ctd_chl_mean,
-      
-      # Chlorophyll ratios (CEFI / CTD)
-      chl_ratio_surface = ifelse(!is.na(ctd_chl_surface) & ctd_chl_surface > 0, 
-                                cefi_chl_surface / ctd_chl_surface, NA),
-      chl_ratio_mean = ifelse(!is.na(ctd_chl_mean) & ctd_chl_mean > 0, 
-                             cefi_chl_mean / ctd_chl_mean, NA),
-      
-      # Data availability flags
       has_cefi_chl = !is.na(cefi_chl_mean),
-      has_ctd_chl = !is.na(ctd_chl_mean),
-      has_both_chl = has_cefi_chl & has_ctd_chl
+      has_ctd_chl = FALSE,  # No CTD data in real-data-only approach
+      has_both_chl = has_cefi_chl  # Only CEFI data available
     )
   
   cat("✓ Created integrated dataset:", nrow(integrated_data), "records\n")
@@ -240,24 +173,22 @@ create_integration_summary <- function(integrated_data) {
   cat("  With both chlorophyll:", availability_summary$with_both_chl, 
       "(", availability_summary$both_coverage_pct, "% )\n")
   
-  # Chlorophyll statistics for records with both datasets
-  if (availability_summary$with_both_chl > 0) {
+  # Chlorophyll statistics for records with CEFI data (real-data-only approach)
+  if (availability_summary$with_cefi_chl > 0) {
     chl_stats <- integrated_data %>%
-      filter(has_both_chl) %>%
+      filter(has_cefi_chl) %>%
       summarise(
         cefi_chl_mean = mean(cefi_chl_mean, na.rm = TRUE),
-        ctd_chl_mean = mean(ctd_chl_mean, na.rm = TRUE),
-        chl_diff_mean = mean(chl_diff_mean, na.rm = TRUE),
-        chl_ratio_mean = mean(chl_ratio_mean, na.rm = TRUE),
-        correlation = cor(cefi_chl_mean, ctd_chl_mean, use = "complete.obs")
+        cefi_chl_surface = mean(cefi_chl_surface, na.rm = TRUE),
+        cefi_chl_subsurface = mean(cefi_chl_subsurface, na.rm = TRUE),
+        cefi_chl_deep = mean(cefi_chl_deep, na.rm = TRUE)
       )
     
-    cat("\nChlorophyll comparison (records with both CEFI and CTD):\n")
-    cat("  CEFI COBALT chlorophyll mean:", round(chl_stats$cefi_chl_mean, 3), "mg/m³\n")
-    cat("  CTD chlorophyll mean:", round(chl_stats$ctd_chl_mean, 3), "mg/m³\n")
-    cat("  Mean difference (CEFI - CTD):", round(chl_stats$chl_diff_mean, 3), "mg/m³\n")
-    cat("  Mean ratio (CEFI / CTD):", round(chl_stats$chl_ratio_mean, 2), "\n")
-    cat("  Correlation:", round(chl_stats$correlation, 3), "\n")
+    cat("\nCEFI COBALT chlorophyll statistics:\n")
+    cat("  Mean chlorophyll:", round(chl_stats$cefi_chl_mean, 3), "mg/m³\n")
+    cat("  Surface (≤10m):", round(chl_stats$cefi_chl_surface, 3), "mg/m³\n")
+    cat("  Subsurface (10-50m):", round(chl_stats$cefi_chl_subsurface, 3), "mg/m³\n")
+    cat("  Deep (100-200m):", round(chl_stats$cefi_chl_deep, 3), "mg/m³\n")
   }
   
   # Species with best chlorophyll coverage

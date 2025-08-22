@@ -185,6 +185,16 @@ if (length(all_chl_data) > 0) {
   cat("  Time range:", min(cefi_chl_data$time), "to", 
       max(cefi_chl_data$time), "\n")
   
+  # Ensure all columns are atomic (not lists) before saving
+  cefi_chl_data <- cefi_chl_data %>%
+    mutate(
+      longitude = as.numeric(longitude),
+      latitude = as.numeric(latitude),
+      depth_m = as.numeric(depth_m),
+      time = as.numeric(time),
+      chlorophyll_mg_m3 = as.numeric(chlorophyll_mg_m3)
+    )
+  
   # Save CEFI chlorophyll data
   write_csv(cefi_chl_data, "cefi_cobalt_chlorophyll_3d.csv")
   cat("✓ Saved CEFI COBALT chlorophyll data to: cefi_cobalt_chlorophyll_3d.csv\n")

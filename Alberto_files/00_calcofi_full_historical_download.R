@@ -1,6 +1,5 @@
 # CalCOFI Full Historical Data Download (1990-Present)
 # Downloads complete CalCOFI database to match full larval dataset temporal range
-# Follows real-data-only rule - uses official CalCOFI sources
 
 library(dplyr)
 library(readr)
@@ -173,44 +172,9 @@ save_datasets <- function(datasets, prefix = "calcofi") {
   return(saved_files)
 }
 
-# Function to download larval fish data specifically
-download_larval_data <- function() {
-  cat("\n--- Downloading Larval Fish Data ---\n")
-  
-  # Try zooplankton database which includes larval fish
-  zoop_extract_dir <- download_calcofi_data(calcofi_urls$zooplankton, "calcofi_downloads")
-  
-  if (!is.null(zoop_extract_dir)) {
-    zoop_datasets <- load_calcofi_datasets(zoop_extract_dir)
-    
-    if (!is.null(zoop_datasets)) {
-      # Look for larval-specific datasets
-      larval_datasets <- list()
-      
-      for (name in names(zoop_datasets)) {
-        if (grepl("larv|ichthyo|fish", name, ignore.case = TRUE)) {
-          larval_datasets[[name]] <- zoop_datasets[[name]]
-          cat("Found larval dataset:", name, "\n")
-        }
-      }
-      
-      if (length(larval_datasets) > 0) {
-        # Filter for analysis period and save
-        filtered_larval <- filter_larval_period(larval_datasets)
-        larval_files <- save_datasets(filtered_larval, "calcofi_larval")
-        return(larval_files)
-      }
-    }
-  }
-  
-  cat("⚠️  No larval datasets found in zooplankton database\n")
-  return(NULL)
-}
-
 # Main execution function
 main_full_download <- function() {
   cat("Starting CalCOFI full historical data download...\n")
-  cat("Target period: 1990-2024 (to match larval dataset range)\n\n")
   
   # Download main database
   extract_dir <- download_calcofi_data(calcofi_urls$database_csv)
@@ -240,18 +204,12 @@ main_full_download <- function() {
   for (file in saved_files) {
     cat("•", file, "\n")
   }
-  
-  if (!is.null(larval_files)) {
-    cat("Larval database files saved:\n")
-    for (file in larval_files) {
-      cat("•", file, "\n")
-    }
-  }
+
   
   cat("\n📊 Full historical CalCOFI download completed!\n")
   cat("Data range: 1990-2024 (matches larval dataset temporal coverage)\n")
   
-  return(list(main_files = saved_files, larval_files = larval_files))
+  return(list(main_files = saved_files))
 }
 
 # Execute
