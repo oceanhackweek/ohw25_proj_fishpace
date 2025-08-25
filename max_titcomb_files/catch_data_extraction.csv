@@ -1,4 +1,4 @@
-latitude_dd,longitude_dd,Trawl_id,date_formatted,datetime_utc_iso,dates
+latitude_dd,longitude_dd,Trawl_id,date_formatted,datetime_utc_iso,date_sheets
 38.67416667,-123.76555556,202403020103,2024-Jun-19,2024-06-19T00:00:00Z,2024-06-19
 42.77361111,-124.73916667,202403017075,2024-Sep-06,2024-09-06T00:00:00Z,2024-09-06
 41.17916667,-124.80694444,202403020088,2024-Jun-16,2024-06-16T00:00:00Z,2024-06-16

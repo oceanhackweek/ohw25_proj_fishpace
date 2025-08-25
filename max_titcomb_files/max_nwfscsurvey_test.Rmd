@@ -17,48 +17,78 @@ library(dplyr)
 library(tidyr)
 library(purrr)
 library(readr)
-library(ggplot2)
 library(maps)
 library(sf)
-
+library(scico)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(sdmTMB)
+library(sdmTMBextra) #https://github.com/pbs-assess/sdmTMBextra
+library(ggplot2)
+library(scales)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
 ```
 
 #Examine Trawl Sites
 ```{r}
-haul <- pull_haul(survey = "NWFSC.Combo")
+haul <- pull_haul(survey = "NWFSC.Combo", years = c(2023, 2050))
+write_csv(haul, "haul_data.csv")
 
 trawl_sites <- haul %>%
   select(latitude_dd, longitude_dd, trawl_id, date_formatted, datetime_utc_iso)
 
 world <- map_data("world")
 
-ggplot() +
-  geom_polygon(data = world, aes(x = long, y = lat, group = group),
-               fill = "gray90", color = "gray60") +
-  geom_point(data = trawl_sites, aes(x = longitude_dd, y = latitude_dd),
-             color = "red", size = 2, alpha = 0.7) +
-  coord_quickmap(
-    xlim = range(trawl_sites$longitude_dd, na.rm = TRUE) + c(-2, 2),  # add buffer
-    ylim = range(trawl_sites$latitude_dd, na.rm = TRUE) +  c(-2, 2)
+p <- ggplot() +
+  # land polygons
+  geom_polygon(
+    data = world,
+    aes(x = long, y = lat, group = group),
+    fill = "white",   # off white land
+    color = "gray60"
   ) +
-  labs(title = "Survey Sites", x = "Longitude", y = "Latitude") +
-  theme_minimal()
+  # trawl points with fill + outline
+  geom_point(
+    data = trawl_sites,
+    aes(x = longitude_dd, y = latitude_dd),
+    shape = 21,                 # circle with outline
+    fill = "yellow2",           # inside color
+    color = "goldenrod4",       # darker outline
+    size = 2,
+    alpha = 0.2,                # translucency for fill
+    stroke = 0.3                # outline thickness
+  ) +
+  # coordinate system with buffer
+  coord_quickmap(
+    xlim = range(trawl_sites$longitude_dd, na.rm = TRUE) + c(-2, 2),
+    ylim = range(trawl_sites$latitude_dd, na.rm = TRUE) + c(-2, 2)
+  ) +
+  labs(
+    title = "Trawl Sites",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "lightblue3", color = NA) # ocean
+  )
 
-#write_csv(trawl_sites, "ne_trawl_sites.csv")
+ggsave("survey_sites_map.png", p, width = 8, height = 6, dpi = 300)
 ```
-
 
 #Catch Data Agg
 ```{r}
-#import life history
+#import life history - Pull out fish names
 life_history <- read_csv("ne_fish_life_history.csv")
 
 fish_names <- life_history$Common_name
 
 catch_data <- pull_catch("NWFSC.Combo", common_name = NULL, sci_name = NULL, years = c(2023, 2050))
+write_csv(catch_data, "catch_data.csv")
 catch_data <- catch_data %>%
-  filter(as.Date(Date) >= as.Date("2024-04-11"),
-         Common_name %in% fish_names)
+  filter(as.Date(Date) >= as.Date("2024-04-11"),Common_name %in% fish_names)
 #Add CPUE metric for numbers of individuals per hectare.
 catch_data <- catch_data %>%
   mutate(cpue_numbers_per_ha_der = ifelse(
@@ -71,7 +101,7 @@ catch_data <- catch_data %>%
 catch_data <- catch_data %>%
   left_join(
     life_history %>% 
-      select(Common_name, Dominant_movement, juv_prey_category, adult_prey_category),
+      select(Common_name),#, Dominant_movement, juv_prey_category, adult_prey_category),
     by = "Common_name"
   )
 
@@ -83,11 +113,23 @@ catch_data <- catch_data %>%
   # Count distinct trawls with nonzero catch
   mutate(n_trawls = n_distinct(Trawl_id)) %>%
   ungroup() %>%
-  # Keep species present in >= 20 such trawls
-  filter(n_trawls >= 10) %>%
-  select(-n_trawls)
+  # Keep species present in >= 50 such trawls
+  filter(n_trawls >= 50)
 
+#table(catch_data_test$Common_name)
 ```
+
+#Species numbers
+```{r}
+species_trawl_counts <- catch_data %>%
+  filter(total_catch_numbers > 0) %>%                 # only positive catches
+  group_by(Common_name) %>%
+  summarise(n_trawls = n_distinct(Trawl_id), .groups = "drop") %>%
+  arrange(desc(n_trawls))   # sort high → low
+
+head(species_trawl_counts, 5)
+```
+
 
 #Pivot wide
 ```{r}
@@ -137,113 +179,225 @@ catch_data_extraction <- catch_data_extraction %>%
 write_csv(catch_data_extraction, "catch_data_extraction.csv")
 
 
+ggplot() +
+  geom_polygon(data = world, aes(x = long, y = lat, group = group),
+               fill = "gray90", color = "gray60") +
+  geom_point(data = catch_data_wide, aes(x = longitude_dd, y = latitude_dd),
+             color = "red", size = 2, alpha = 0.7) +
+  coord_quickmap(
+    xlim = range(catch_data_wide$longitude_dd, na.rm = TRUE) + c(-2, 2),  # add buffer
+    ylim = range(catch_data_wide$latitude_dd, na.rm = TRUE) +  c(-2, 2)
+  ) +
+  labs(title = "Survey Sites", x = "Longitude", y = "Latitude") +
+  theme_minimal()
+
+#Fix species name labels
+names(catch_data_wide) <- gsub(" ", "_", names(catch_data_wide))
 
 ```
-
-
-
-
 
 #Make a prediction grid (np.meshgrid in python)
 
-
-
 ```{r}
-pick_ca_utm <- function(mid_lon) {
-  if (mid_lon < -120) 32610 else 32611  # Zone 10N
-}
-
-make_km_grid_ca <- function(lat1, lon1, lat2, lon2,
-                            spacing_m = 1000,
-                            return = c("points", "polygons"),
-                            epsg_utm = "auto_ca") {
-  return <- match.arg(return)
-
-  # 1) bbox in WGS84
-  min_lon <- min(lon1, lon2); max_lon <- max(lon1, lon2)
-  min_lat <- min(lat1, lat2); max_lat <- max(lat1, lat2)
-  bbox_wgs84 <- st_as_sfc(st_bbox(c(xmin = min_lon, ymin = min_lat,
-                                    xmax = max_lon, ymax = max_lat),
-                                  crs = 4326))
-
-  # 2) pick CA UTM
-  if (identical(epsg_utm, "auto_ca")) {
-    mid_lon <- (min_lon + max_lon) / 2
-    epsg_utm <- pick_ca_utm(mid_lon)
-  }
-  crs_utm <- st_crs(epsg_utm)
-
-  # 3) project bbox, build grid in meters
-  bbox_utm <- st_transform(bbox_wgs84, crs_utm)
-  grid_polys_utm <- st_make_grid(bbox_utm, cellsize = spacing_m, square = TRUE) |>
-    st_as_sf() |>
-    dplyr::rename(geometry = x) |>
-    dplyr::mutate(grid_id = dplyr::row_number())
-
-  # 4) return polygons or centroids, back to WGS84
-  if (return == "polygons") {
-    out <- st_transform(grid_polys_utm, 4326)
-  } else {
-    out <- st_transform(st_centroid(grid_polys_utm), 4326)
-  }
-  out
-}
-
-catch_sf <- st_as_sf(
-  catch_data_wide,
-  coords = c("longitude_dd", "latitude_dd"),
-  crs = 4326
-)
-
-bb <- st_bbox(catch_sf)  # xmin=lon_min, xmax=lon_max, ymin=lat_min, ymax=lat_max
-
-grid_pts <- make_km_grid_ca(
-  lat1 = as.numeric(bb["ymin"]),
-  lon1 = as.numeric(bb["xmin"]),
-  lat2 = as.numeric(bb["ymax"]),
-  lon2 = as.numeric(bb["xmax"]),
-  spacing_m = 1000,
-  return = "points"
-)
-
-# Quick check
-print(st_crs(grid_pts))   # EPSG:4326
-plot(st_geometry(grid_pts), pch = 16, cex = 0.2)
+# pick_ca_utm <- function(mid_lon) {
+#   if (mid_lon < -120) 32610 else 32611  # Zone 10N
+# }
+# 
+# make_km_grid_ca <- function(lat1, lon1, lat2, lon2,
+#                             spacing_m = 1000,
+#                             return = c("points", "polygons"),
+#                             epsg_utm = "auto_ca") {
+#   return <- match.arg(return)
+# 
+#   # 1) bbox in WGS84
+#   min_lon <- min(lon1, lon2); max_lon <- max(lon1, lon2)
+#   min_lat <- min(lat1, lat2); max_lat <- max(lat1, lat2)
+#   bbox_wgs84 <- st_as_sfc(st_bbox(c(xmin = min_lon, ymin = min_lat,
+#                                     xmax = max_lon, ymax = max_lat),
+#                                   crs = 4326))
+# 
+#   # 2) pick CA UTM
+#   if (identical(epsg_utm, "auto_ca")) {
+#     mid_lon <- (min_lon + max_lon) / 2
+#     epsg_utm <- 32610
+#   }
+#   crs_utm <- st_crs(epsg_utm)
+# 
+#   # 3) project bbox, build grid in meters
+#   bbox_utm <- st_transform(bbox_wgs84, crs_utm)
+#   grid_polys_utm <- st_make_grid(bbox_utm, cellsize = spacing_m, square = TRUE) |>
+#     st_as_sf() |>
+#     dplyr::rename(geometry = x) |>
+#     dplyr::mutate(grid_id = dplyr::row_number())
+# 
+#   # 4) return polygons or centroids, back to WGS84
+#   if (return == "polygons") {
+#     out <- st_transform(grid_polys_utm, 4326)
+#   } else {
+#     out <- st_transform(st_centroid(grid_polys_utm), 4326)
+#   }
+#   out
+# }
+# 
+# catch_sf <- st_as_sf(
+#   catch_data_wide,
+#   coords = c("longitude_dd", "latitude_dd"),
+#   crs = 4326
+# )
+# 
+# bb <- st_bbox(catch_sf)  # xmin=lon_min, xmax=lon_max, ymin=lat_min, ymax=lat_max
+# 
+# grid_pts <- make_km_grid_ca(
+#   lat1 = as.numeric(bb["ymin"]),
+#   lon1 = as.numeric(bb["xmin"]),
+#   lat2 = as.numeric(bb["ymax"]),
+#   lon2 = as.numeric(bb["xmax"]),
+#   spacing_m = 1000,
+#   return = "points"
+# )
+# 
+# # Quick check
+# print(st_crs(grid_pts))   # EPSG:4326
+# plot(st_geometry(grid_pts), pch = 16, cex = 0.2)
+# 
+# # Extract lon/lat from sf geometry
+# grid_coords <- grid_pts %>%
+#   st_coordinates() %>%
+#   as_tibble() %>%
+#   rename(longitude_dd = X, latitude_dd = Y) %>%
+#   bind_cols(st_drop_geometry(grid_pts))  # keep grid_id or other attributes if present
+# 
+# # Write to CSV
+# write_csv(grid_coords, "grid_points.csv")
 ```
 
-
+#Make Data UTM
 ```{r}
-# extent <- sf::read_sf(here("/Users/maxtitcomb/Documents/research/first_year_project/code_v2/data/gis_data_raw/tnc_habitat_extent_caribbean/tnc_habitat_extent_caribbean.shp"))
-# extent <- st_transform(extent, crs = chosen_crs)
-# 
-# 
-# # ggplot(extent) +
-# #   geom_sf() +
-# #   geom_sf(data = survey, size = 0.5)
-# 
-# # create a polygon based off the mesh boundaries
-# new_poly <- st_convex_hull(st_union(grouper_barrier_mesh$mesh_sf))
-# plot(new_poly)
-# st_crs(new_poly)
-# 
-# # remove land from polygon
-# poly <- st_difference(new_poly, na_coast_proj)
-# st_crs(poly) 
-# plot(poly)
-# st_bbox(poly)
-# 
-# resolution <- 8000 # poly is in meters; 2000 is pretty fine: 2000m x 2000m = 4 km2
-# r <- raster::raster(as(extent, "Spatial"), resolution = resolution)
-# rr <- raster::rasterize(as(extent, "Spatial"), r, getCover = TRUE)
-# plot(rr)
+add_utm_coords <- function(df, lat_col, lon_col, input_crs = 4326, output_crs = 32610) {
+  # Preserve the original data frame (including the latitude and longitude columns).
+  original_df <- df
+  
+  # Convert df into an sf object using the specified coordinate columns,
+  # then transform to the desired UTM projection.
+  sf_obj <- df %>%
+    st_as_sf(coords = c(lon_col, lat_col), crs = input_crs) %>%
+    st_transform(output_crs)
+  
+  # Extract the new UTM coordinates.
+  new_coords <- st_coordinates(sf_obj)
+  
+  # Create a data frame with the new UTM coordinates in meters and kilometers.
+  utm_df <- data.frame(
+    lon_utm_meters = new_coords[, "X"],
+    lat_utm_meters = new_coords[, "Y"],
+    lon_utm_km = new_coords[, "X"] / 1000,
+    lat_utm_km = new_coords[, "Y"] / 1000
+  )
+  
+  # Combine the original data with the new UTM coordinate columns.
+  final_df <- cbind(original_df, utm_df)
+  
+  return(final_df)
+}
+
+catch_data_wide <- catch_data_wide %>%
+  add_utm_coords(lat_col = "latitude_dd", lon_col = "longitude_dd")
+```
+
+#Make Barrier Mesh
+```{r}
+#catch_data_wide
+world <- ne_countries(scale = "large", returnclass = "sf")
+na_continents <- world %>% dplyr::filter(continent == "North America")
+na_continents_proj <- st_transform(na_continents, crs = st_crs(32610))  
+na_continents_proj_km <- na_continents_proj %>%
+  mutate(geometry = geometry / 1000)  # scale units from meters → km
+st_crs(na_continents_proj_km) <- NA
+# na_continents_proj <- st_transform(na_continents, 32610) %>%
+#   dplyr::mutate(geometry = geometry / 1000)
+
+make_barrier_mesh <- function(dat, regional_continents, cutoff) {
+  # Create base mesh
+  mesh <- make_mesh(dat, xy_cols = c("lon_utm_km", "lat_utm_km"), cutoff = cutoff, type = "kmeans")
+  plot(mesh)
+  # Add barrier mesh component
+  barrier_mesh <- add_barrier_mesh(mesh, regional_continents, range_fraction = 0.1,
+                                   proj_scaling = 1000, plot = TRUE)
+  
+  return(barrier_mesh)
+}
+```
+
+#Add PACE data to catch_data
+```{r}
+pace_data <- read_csv("catch_clean_west.csv")
+pace_data$Trawl_id <- as.character(pace_data$Trawl_id)
+table(is.na(pace_data$chlor_a))
+catch_data_wide <- catch_data_wide %>%
+  left_join(
+    pace_data %>% select(Trawl_id, chlor_a),
+    by = "Trawl_id"
+  )
 ```
 
 
 #Set up SDMtmb model
 ```{r}
-catch_data_wide
+nw_formula <- " ~ chlor_a_standardized" #standardize by subtracting mean and divide by sd
 
-nw_formula <- " ~1"
+standardize_columns <- function(data, columns, column_name) {
+  for (column in columns) {
+    scaled_name <- paste0(column, column_name) # Name of the new scaled column
+    data[[scaled_name]] <- (data[[column]] - mean(data[[column]], na.rm = TRUE)) / sd(data[[column]], na.rm = TRUE)
+  }
+  return(data)
+}
+
+catch_data_wide_no_na <- catch_data_wide %>%
+  filter(!is.na(chlor_a))
+
+catch_data_wide_no_na <- standardize_columns(catch_data_wide_no_na, c("chlor_a"), "_standardized")
+
+#Pull out 10% of rows for testing the quality of my model predictions
+set.seed(123)  # for reproducibility
+test_data <- catch_data_wide_no_na %>% # 10% sample for testing
+  slice_sample(prop = 0.2)
+train_data <- catch_data_wide_no_na %>% # remaining 90% for training
+  anti_join(test_data, by = "Trawl_id")
+nrow(train_data)  # ~90% of rows
+nrow(test_data)   # ~10% of rows
+
+#New Data
+pace_grid <- read_csv("test_grid_20240824.csv")
+pace_grid_no_na <- pace_grid %>%
+  filter(!is.na(chlor_a_sat))
+pace_grid_no_na <- pace_grid_no_na %>%
+  rename("chlor_a" = "chlor_a_sat")
+pace_grid_no_na <- pace_grid_no_na %>%
+  rename(
+    lon_utm_meters = X,
+    lat_utm_meters = Y
+  ) %>%
+  mutate(
+    lon_utm_km = lon_utm_meters / 1000,
+    lat_utm_km = lat_utm_meters / 1000
+  )
+
+pace_grid_no_na <- standardize_columns(pace_grid_no_na, c("chlor_a"), "_standardized")
+
+#Check how many positive pace data cells in grid
+# pace_grid %>%
+#     filter(chlor_a_sat > 0) %>%
+#     nrow()
+```
+
+
+#Single Species sdmTMB model code
+```{r}
+########################
+#Model Code
+########################
+barrier_mesh <- make_barrier_mesh(train_data, regional_continents = na_continents_proj_km, cutoff = 20)
 
 model_species_data <- function(species_formula, data, presence_col, mesh, extra_time, spatial) {
   # Ensure the presence column is correctly referenced
@@ -254,105 +408,793 @@ model_species_data <- function(species_formula, data, presence_col, mesh, extra_
     formula = formula,
     data = data,
     mesh = mesh,
-    family = binomial(link = "logit"),
+    #family = binomial(link = "logit"),
+    family = tweedie(link = "log"), # handles zeros + continuous positive values
     spatial = spatial,
-    time = "year_numeric",
-    spatiotemporal = "AR1",
+    time = NULL,
+    spatiotemporal = "off",
     silent = FALSE,
     extra_time = extra_time
   )
   
   return(model)
 }
-```
+species_metric <- "spotted_ratfish_cpue_numbers_per_ha_der"
+model <- model_species_data(nw_formula, train_data, species_metric, barrier_mesh, extra_time = NULL, spatial = c("on"))
+#spotted_ratfish_presence
+#spotted_ratfish_cpue_numbers_per_ha_der this is probably best
+#spotted_ratfish_cpue_kg_per_ha_der
+sanity_output <- as.data.frame(sanity(model))
+coeff_data <- tidy(model, "fixed", conf.int = TRUE, conf.level = 0.9)
+coeff_data
+coeff_plot <- ggplot(coeff_data, aes(x = estimate, y = factor(term, levels=term))) +
+  geom_vline(xintercept = 0, lty = 2, color = "black") +
+  geom_point(size = 3, color = "black") +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2, color = "black") +
+  labs(title = paste(species_metric, "Covariate Effect Sizes"), x = "Coefficient Estimate", y = "Covariates") +
+  theme_minimal() +
+  theme_bw()
+coeff_plot
 
+pred.index <- predict(model, newdata = pace_grid_no_na, return_tmb_object = FALSE, type = "response") #, nsim = 100)
 
+# 0) Extent from your prediction grid (in km)
+xlim <- range(pred.index$lon_utm_km, na.rm = TRUE)
+ylim <- range(pred.index$lat_utm_km, na.rm = TRUE)
 
-
-##################################################################################################
-
-
-```{r}
-
-#Functions
-ls("package:nwfscSurvey")
-
-#Get all species
-species_list <- GetSppDefault.fn()
-
-haul <- pull_haul(survey = "NWFSC.Combo")
-
-#Test
-catch = pull_catch(
-  common_name = "Pacific ocean perch", 
-  survey = "NWFSC.Combo")
-bio = pull_bio(
-  common_name = "Pacific ocean perch", 
-  survey = "NWFSC.Combo")
-
-#Filter to when Pace data starts
-catch <- catch%>%
-  filter(as.Date(Date) >= as.Date("2024-04-11"))
-unique(catch$Date)
-
-bio <- bio%>%
-  filter(as.Date(Date) >= as.Date("2024-04-11"))
-unique(bio$Date)
-
-
-plot_cpue(
-  catch = catch)
-
-PlotMap.fn(
-  dat = catch)
-```
-#Iterated code
-```{r}
-# catch = pull_catch(
-#   common_name = "Yellowtail rockfish", 
-#   survey = "NWFSC.Combo", years = c(2023,2050))
-
-# species + pretty labels
-species_list <- GetSppDefault.fn()
-pretty_map <- setNames(
-  paste0(toupper(substring(gsub("_"," ", species_list),1,1)),
-         substring(gsub("_"," ", species_list),2)),
-  species_list
-)
-labels <- unname(pretty_map)
-
-# safe fetch (NULL on error/no catches)
-safe_pull_catch <- possibly(
-  function(lbl) pull_catch(common_name = lbl, survey = "NWFSC.Combo", years = c(2023, 2050)),
-  otherwise = NULL
+# 1) Crop basemap (already in km, CRS is intentionally NA after scaling)
+na_continents_proj_km_crop <- suppressWarnings(
+  st_crop(na_continents_proj_km,
+          xmin = xlim[1], xmax = xlim[2],
+          ymin = ylim[1], ymax = ylim[2])
 )
 
-# 1) pull  2) drop NULL  3) date-filter  4) drop empties  -> names always in sync
-catch_raw   <- set_names(map(labels, safe_pull_catch), labels)
-catch_nonNA <- discard(catch_raw, is.null)
-catch_filt  <- map(catch_nonNA, ~ filter(.x, as.Date(Date) >= as.Date("2024-04-11")))
-catch_list  <- discard(catch_filt, ~ nrow(.x) == 0)   # <-- final named list
+plot_map <- function(dat, column = est) {
+  ggplot(dat, aes(lon_utm_km, lat_utm_km, fill = {{ column }})) +
+    geom_raster() +
+    coord_fixed()
+}
 
-catch_all <- list_rbind(imap(catch_list, ~ mutate(.x, species = .y)))
+# then add basemap below by building layers explicitly:
+map_plot <- plot_map(pred.index, est) +
+  geom_sf(data = na_continents_proj_km_crop,
+          fill = "grey85", color = "white", linewidth = 0.2,
+          inherit.aes = FALSE) +
+  scale_fill_viridis_c(trans = "log10", name = "CPUE") +
+  #ggtitle(paste(species_metric, "Prediction (Tweedie; response scale)")) +
+  theme_minimal()+
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+map_plot
+########################
+#Plot occurance alongside prediction
+########################
+species_metric <- "spotted_ratfish_cpue_numbers_per_ha_der"
 
-PlotMap.fn(
-  dat = catch_filt$`Dover sole`)
+plot_df <- train_data 
+
+# basemap
+world <- ne_countries(scale = "large", returnclass = "sf")
+
+# make sf object for survey points
+pts_sf <- st_as_sf(plot_df,
+                   coords = c("longitude_dd", "latitude_dd"),
+                   crs = 4326)
+
+# bounding box with padding (10%)
+bb <- st_bbox(pts_sf)
+xpad <- 0.1 * (bb$xmax - bb$xmin)
+ypad <- 0.1 * (bb$ymax - bb$ymin)
+
+plot_1 <- ggplot() +
+  geom_sf(data = world, fill = "grey95", color = "white", linewidth = 0.2) +
+  geom_sf(
+    data = pts_sf,
+    aes(size = .data[[species_metric]]),
+    alpha = 0.7, color = "darkblue"
+  ) +
+  coord_sf(
+    xlim = c(bb$xmin - xpad, bb$xmax + xpad),
+    ylim = c(bb$ymin - ypad, bb$ymax + ypad),
+    expand = FALSE
+  ) +
+  scale_size_area(
+    max_size = 8, breaks = pretty_breaks(4),
+    name = "CPUE"
+  ) +
+  labs(
+    #title = "Spotted ratfish — CPUE (numbers per ha)",
+    x = "Longitude", y = "Latitude"
+  ) +
+  theme_minimal()+
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+plot_1
+
+########################
+#Make a plot using test data to see how well model is predicing on new data (bar plots). Then plot that data spatially to show what regions model tends to be performing better.
+########################
+pred.index_testing_data <- predict(model, newdata = test_data, return_tmb_object = FALSE, type = "response") #, nsim = 100)
+plot_df_testing_data <- pred.index_testing_data %>%
+  arrange(latitude_dd) %>%
+  mutate(
+    row_order = row_number(),
+    obs  = spotted_ratfish_cpue_numbers_per_ha_der,
+    resid = est - obs,
+    abs_err = abs(resid)
+  ) %>%
+  select(row_order, Trawl_id, est, obs, resid, abs_err,
+         latitude_dd, longitude_dd)
 
 
-dir.create("plots_cpue", showWarnings = FALSE)
+plot_long <- plot_df_testing_data %>%
+  pivot_longer(cols = c(est, obs), names_to = "type", values_to = "value")
 
+plot_2 <- ggplot(plot_long, aes(x = factor(row_order), y = value, fill = type)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("est" = "goldenrod2", "obs" = "grey47"),
+                    labels = c("Prediction", "Observed")) +
+  labs(
+    x = "Trawl sites (south → north)",
+    y = "CPUE (numbers per ha)",
+    fill = NULL,
+    #title = "Predicted vs Observed CPUE"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+plot_2
 
-pull_catch()
+pts_sf <- st_as_sf(plot_df_testing_data,
+                   coords = c("longitude_dd", "latitude_dd"),
+                   crs = 4326)
+
+plot_3 <- ggplot() +
+  geom_sf(data = world, fill = "grey95", color = "white", linewidth = 0.2) +
+  geom_sf(data = pts_sf,
+          aes(color = resid, size = abs_err), alpha = 0.8) +
+  coord_sf(
+    xlim = c(bb$xmin - xpad, bb$xmax + xpad),
+    ylim = c(bb$ymin - ypad, bb$ymax + ypad),
+    expand = FALSE
+  ) +
+scale_color_scico(
+  palette = "vik",     # diverging viridis-like palette
+  midpoint = 0,
+  name = "Residual (Pred - Obs)"
+)+
+  scale_size_area(
+    max_size = 8, breaks = scales::pretty_breaks(4),
+    name = "Absolute Error"
+  ) +
+  labs(
+    #title = "Spotted Ratfish — Spatial Residuals",
+    #subtitle = "Color = Over/Under Prediction | Size = Error Magnitude",
+    x = "Longitude", y = "Latitude"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+plot_3
+
+########################
+#Export figures
+########################
+#top_row <- map_plot + plot_1 + plot_3
+# top_row <- plot_1 + map_plot + plot_3 + plot_layout(widths = c(1.5, 1, 1))
+# bottom_row <- plot_2 + plot_layout(heights = c(2))
+# final_plot <- top_row / bottom_row
+
+# Top row: map_plot | plot_1 | plot_3
+top_row <- plot_1 + map_plot + plot_3
+bottom_row <- plot_2 + plot_layout(heights = c(1.5))
+
+# Full layout: top row over plot_2
+final_plot <- top_row / bottom_row +
+  plot_annotation(
+    title = "Spotted Ratfish Estimates of CPUE (individuals per hectare trawl)",
+    tag_levels = "A"   # Labels subplots A, B, C...
+  )
+
+# Display
+final_plot
+ggsave("spotted_ratfish_model_results.png", final_plot, width = 12, height = 10, dpi = 600)
 ```
 
 
+#Residual checking
+```{r}
+
+# bsb$resids <- residuals(fit) # randomized quantile residuals
+# # d$resids <- residuals(m, type = "mle-mcmc") # better but slower
+# hist(bsb$resids)
+# 
+# qqnorm(bsb$resids)
+# abline(a = 0, b = 1)
+# 
+# ggplot(bsb, aes(Lon.km, Lat.km, col = resids)) + scale_colour_gradient2() +
+#   geom_point() + facet_wrap(~year) + coord_fixed()
+# 
+# visreg(fit,data=bsb,
+#                type = "conditional")
+# 
+# # on the response scale
+# visreg::visreg(fit, xvar = "depth", scale = "response")
+```
+
+#Efficient version
+```{r}
+# --- Packages ---
+library(dplyr)
+library(ggplot2)
+library(sf)
+library(sdmTMB)
+library(broom.mixed)
+library(patchwork)
+library(scales)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(stringr)
+library(viridis)  # for scale_fill_viridis_c
+library(scico)    # for scale_color_scico
+
+# --- Helpers ---
+pretty_species <- function(x) {
+  x |>
+    str_remove("_cpue_kg_per_ha_der|_cpue_numbers_per_ha_der|_presence$") |>
+    str_replace_all("_", " ") |>
+    str_to_title()
+}
+
+plot_map_raster <- function(dat, continents_crop, fill_col = est, fill_lab = "CPUE") {
+  ggplot(dat, aes(lon_utm_km, lat_utm_km, fill = {{ fill_col }})) +
+    geom_raster() +
+    coord_fixed() +
+    geom_sf(data = continents_crop,
+            fill = "grey85", color = "white", linewidth = 0.2,
+            inherit.aes = FALSE) +
+    scale_fill_viridis_c(trans = "log10", name = fill_lab) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+obs_points_map <- function(df, species_col, world_sf, bbox_pad = 0.10) {
+  pts_sf <- st_as_sf(df, coords = c("longitude_dd", "latitude_dd"), crs = 4326)
+
+  bb <- st_bbox(pts_sf)
+  xpad <- bbox_pad * (bb$xmax - bb$xmin)
+  ypad <- bbox_pad * (bb$ymax - bb$ymin)
+
+  ggplot() +
+    geom_sf(data = world_sf, fill = "grey95", color = "white", linewidth = 0.2) +
+    geom_sf(
+      data = pts_sf,
+      aes(size = .data[[species_col]]),
+      alpha = 0.7, color = "darkblue"
+    ) +
+    coord_sf(
+      xlim = c(bb$xmin - xpad, bb$xmax + xpad),
+      ylim = c(bb$ymin - ypad, bb$ymax + ypad),
+      expand = FALSE
+    ) +
+    scale_size_area(max_size = 8, breaks = pretty_breaks(4), name = "CPUE") +
+    labs(x = "Longitude", y = "Latitude") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+coeff_plot_fixed <- function(model, title_left) {
+  td <- tidy(model, "fixed", conf.int = TRUE, conf.level = 0.90)
+  ggplot(td, aes(x = estimate, y = factor(term, levels = rev(term)))) +
+    geom_vline(xintercept = 0, lty = 2) +
+    geom_point(size = 3) +
+    geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+    labs(title = paste(title_left, "Covariate Effect Sizes (90% CI)"),
+         x = "Coefficient Estimate", y = "Covariates") +
+    theme_bw()
+}
+
+# --- Core workflow functions ---
+
+# 1) Mesh builder (kept explicit so you can reuse/customize)
+build_barrier_mesh <- function(train_df, continents_sf_km, cutoff = 20) {
+  make_barrier_mesh(train_df, regional_continents = continents_sf_km, cutoff = cutoff)
+}
+
+# 2) Fit SDM-TMB model for a given species column and RHS formula (string or formula)
+fit_sdm_species <- function(
+  species_col, rhs = "~ chlor_a_standardized",
+  train_df, mesh,
+  spatial = "on", extra_time = NULL,
+  family = tweedie(link = "log"),
+  spatiotemporal = "off", time = NULL, silent = FALSE
+) {
+  # build full formula: "<response> ~ ..."
+  form <- as.formula(paste0(species_col, " ", rhs))
+
+  sdmTMB(
+    formula = form,
+    data = train_df,
+    mesh = mesh,
+    family = family,
+    spatial = spatial,
+    time = time,
+    spatiotemporal = spatiotemporal,
+    silent = silent,
+    extra_time = extra_time
+  )
+}
+
+# 3) Predict on a grid and return prediction df + cropped continents
+predict_on_grid <- function(model, grid_df, continents_sf_km) {
+  pred <- predict(model, newdata = grid_df, return_tmb_object = FALSE, type = "response")
+
+  xlim <- range(pred$lon_utm_km, na.rm = TRUE)
+  ylim <- range(pred$lat_utm_km, na.rm = TRUE)
+  continents_crop <- suppressWarnings(
+    st_crop(
+      continents_sf_km,
+      xmin = xlim[1], xmax = xlim[2],
+      ymin = ylim[1], ymax = ylim[2]
+    )
+  )
+  list(pred = pred, continents_crop = continents_crop)
+}
+
+# 4) Build test vs observed diagnostics directly from the fitted model
+test_diagnostics <- function(model, test_df, species_col) {
+  # Predict on test data
+  pr_test <- predict(model, newdata = test_df, type = "response", return_tmb_object = FALSE) |>
+    dplyr::rename(est = est)
+
+  diag_df <- test_df |>
+    dplyr::mutate(est = pr_test$est) |>
+    dplyr::mutate(
+      obs    = .data[[species_col]],
+      resid  = est - obs,
+      abs_err = abs(resid)
+    ) |>
+    dplyr::arrange(latitude_dd) |>
+    dplyr::mutate(row_order = dplyr::row_number()) |>
+    dplyr::select(row_order, Trawl_id, est, obs, resid, abs_err, latitude_dd, longitude_dd)
+
+  # Long for bars
+  long_bars <- diag_df |>
+    tidyr::pivot_longer(cols = c(est, obs), names_to = "type", values_to = "value")
+
+  list(diag_df = diag_df, long_bars = long_bars)
+}
+
+# 5) Produce plots and (optionally) save a patchwork figure
+run_sdm_pipeline <- function(
+  species_col,
+  rhs = "~ chlor_a_standardized",
+  train_df, test_df,
+  grid_df_km, continents_sf_km,
+  world_sf = rnaturalearth::ne_countries(scale = "large", returnclass = "sf"),
+  spatial = "on",
+  mesh_cutoff = 20,
+  save_png = NULL # e.g., "spotted_ratfish_model_results.png"
+) {
+  species_title <- pretty_species(species_col)
+
+  # Mesh
+  barrier_mesh <- build_barrier_mesh(train_df, continents_sf_km, cutoff = mesh_cutoff)
+
+  # Model
+  model <- fit_sdm_species(
+    species_col = species_col,
+    rhs        = rhs,
+    train_df   = train_df,
+    mesh       = barrier_mesh,
+    spatial    = spatial
+  )
+
+  # Sanity + coefficients
+  sanity_output <- as.data.frame(sanity(model))
+  coeff_p <- coeff_plot_fixed(model, species_title)
+
+  # Grid prediction + map
+  pg <- predict_on_grid(model, grid_df_km, continents_sf_km)
+  pred.index <- pg$pred
+  map_p <- plot_map_raster(pred.index, pg$continents_crop, fill_col = est, fill_lab = "CPUE")
+
+  # Observed points (training data)
+  obs_p <- obs_points_map(train_df, species_col, world_sf)
+
+  # Test diagnostics: bars + residual map
+  diag <- test_diagnostics(model, test_df, species_col)
+
+  bars_p <- ggplot(diag$long_bars, aes(x = factor(row_order), y = value, fill = type)) +
+    geom_col(position = "dodge") +
+    scale_fill_manual(values = c("est" = "goldenrod2", "obs" = "grey47"),
+                      labels = c("Prediction", "Observed")) +
+    labs(x = "Trawl sites (south → north)", y = "CPUE (numbers per ha)", fill = NULL) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+  pts_sf <- st_as_sf(diag$diag_df, coords = c("longitude_dd", "latitude_dd"), crs = 4326)
+  bb <- st_bbox(pts_sf); xpad <- 0.1 * (bb$xmax - bb$xmin); ypad <- 0.1 * (bb$ymax - bb$ymin)
+
+  resid_p <- ggplot() +
+    geom_sf(data = world_sf, fill = "grey95", color = "white", linewidth = 0.2) +
+    geom_sf(data = pts_sf, aes(color = resid, size = abs_err), alpha = 0.8) +
+    coord_sf(
+      xlim = c(bb$xmin - xpad, bb$xmax + xpad),
+      ylim = c(bb$ymin - ypad, bb$ymax + ypad),
+      expand = FALSE
+    ) +
+    scale_color_scico(palette = "vik", midpoint = 0, name = "Residual (Pred - Obs)") +
+    scale_size_area(max_size = 8, breaks = scales::pretty_breaks(4), name = "Absolute Error") +
+    labs(x = "Longitude", y = "Latitude") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  # Patchwork layout (A,B,C on top; D bottom)
+  top_row <- obs_p + map_p + resid_p
+  bottom_row <- bars_p + plot_layout(heights = c(1.5))
+  final_plot <- top_row / bottom_row +
+    plot_annotation(
+      title = paste0(species_title, " — Estimates of CPUE (individuals per ha)"),
+      tag_levels = "A"
+    )
+
+  if (!is.null(save_png)) {
+    ggsave(save_png, final_plot, width = 12, height = 10, dpi = 600)
+  }
+
+  list(
+    model = model,
+    sanity = sanity_output,
+    coeff_plot = coeff_p,
+    map_plot = map_p,
+    observed_plot = obs_p,
+    bars_plot = bars_p,
+    residuals_plot = resid_p,
+    final_plot = final_plot,
+    predictions_grid = pred.index
+  )
+}
+
+# ============================
+# EXAMPLE: Spotted ratfish
+# ============================
+
+# Assume you already have:
+# - train_data, test_data (with longitude_dd, latitude_dd, and your species columns)
+# - pace_grid_no_na (with lon_utm_km, lat_utm_km, and covariates used by the model)
+# - na_continents_proj_km (sf, in km)
+# - nw_formula as a string like "~ chlor_a_standardized"
+
+species_metric <- "spotted_ratfish_cpue_numbers_per_ha_der"
+
+res <- run_sdm_pipeline(
+  species_col = species_metric,
+  rhs         = nw_formula,            # "~ chlor_a_standardized"
+  train_df    = train_data,
+  test_df     = test_data,
+  grid_df_km  = pace_grid_no_na,
+  continents_sf_km = na_continents_proj_km,
+  spatial     = "on",
+  mesh_cutoff = 20,
+  save_png    = "spotted_ratfish_model_results.png"
+)
+
+# View results
+res$coeff_plot
+res$map_plot
+res$observed_plot
+res$bars_plot
+res$residuals_plot
+res$final_plot
+```
+
+#Looped Command
+Loops over every *_cpue_numbers_per_ha_der column
+Fits the model, skips species that fail sanity()
+Builds a single coeff_table (no coeff PNGs)
+Saves a final_plot PNG per passed species into final_plots_and_tables/
+```{r}
+# --- Packages ---
+library(dplyr)
+library(purrr)
+library(sdmTMB)
+library(broom.mixed)
+library(ggplot2)
+library(patchwork)
+library(sf)
+library(scales)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(viridis)
+library(scico)
+
+# --- Output folder ---
+outdir <- "final_plots_and_tables"
+if (!dir.exists(outdir)) dir.create(outdir)
+
+# --- Helpers ---
+pretty_species <- function(x) {
+  x <- gsub("_cpue_numbers_per_ha_der$|_cpue_kg_per_ha_der$|_presence$", "", x)
+  x <- gsub("_", " ", x)
+  tools::toTitleCase(x)
+}
+
+# Build mesh once (faster & consistent)
+shared_mesh <- build_barrier_mesh(train_data, na_continents_proj_km, cutoff = 20)
+
+# Small helpers for plotting the final figure
+plot_map_raster <- function(dat, continents_crop, fill_col = est, fill_lab = "CPUE") {
+  ggplot(dat, aes(lon_utm_km, lat_utm_km, fill = {{ fill_col }})) +
+    geom_raster() +
+    coord_fixed() +
+    geom_sf(data = continents_crop, fill = "grey85", color = "white", linewidth = 0.2, inherit.aes = FALSE) +
+    scale_fill_viridis_c(trans = "log10", name = fill_lab) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+obs_points_map <- function(df, species_col, world_sf, bbox_pad = 0.10) {
+  pts_sf <- st_as_sf(df, coords = c("longitude_dd", "latitude_dd"), crs = 4326)
+  bb <- st_bbox(pts_sf)
+  xpad <- bbox_pad * (bb$xmax - bb$xmin); ypad <- bbox_pad * (bb$ymax - bb$ymin)
+
+  ggplot() +
+    geom_sf(data = world_sf, fill = "grey95", color = "white", linewidth = 0.2) +
+    geom_sf(data = pts_sf, aes(size = .data[[species_col]]), alpha = 0.7, color = "darkblue") +
+    coord_sf(xlim = c(bb$xmin - xpad, bb$xmax + xpad),
+             ylim = c(bb$ymin - ypad, bb$ymax + ypad),
+             expand = FALSE) +
+    scale_size_area(max_size = 8, breaks = pretty_breaks(4), name = "CPUE") +
+    labs(x = "Longitude", y = "Latitude") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+predict_on_grid <- function(model, grid_df, continents_sf_km) {
+  pred <- predict(model, newdata = grid_df, return_tmb_object = FALSE, type = "response")
+  xlim <- range(pred$lon_utm_km, na.rm = TRUE); ylim <- range(pred$lat_utm_km, na.rm = TRUE)
+  continents_crop <- suppressWarnings(st_crop(continents_sf_km, xmin = xlim[1], xmax = xlim[2],
+                                              ymin = ylim[1], ymax = ylim[2]))
+  list(pred = pred, continents_crop = continents_crop)
+}
+
+test_diagnostics <- function(model, test_df, species_col) {
+  pr_test <- predict(model, newdata = test_df, type = "response", return_tmb_object = FALSE) |>
+    dplyr::rename(est = est)
+
+  diag_df <- test_df |>
+    dplyr::mutate(est = pr_test$est,
+                  obs = .data[[species_col]],
+                  resid = est - obs,
+                  abs_err = abs(resid)) |>
+    dplyr::arrange(latitude_dd) |>
+    dplyr::mutate(row_order = dplyr::row_number()) |>
+    dplyr::select(row_order, Trawl_id, est, obs, resid, abs_err, latitude_dd, longitude_dd)
+
+  long_bars <- diag_df |>
+    tidyr::pivot_longer(cols = c(est, obs), names_to = "type", values_to = "value")
+
+  list(diag_df = diag_df, long_bars = long_bars)
+}
+
+# Fit wrapper you already have:
+# fit_sdm_species(species_col, rhs, train_df, mesh, spatial="on", ...)
+
+# --- Species list ---
+species_cols <- grep("_cpue_numbers_per_ha_der$", names(train_data), value = TRUE)
+
+# --- Containers ---
+passfail   <- vector("list", length(species_cols))
+coeff_rows <- vector("list", length(species_cols))
+
+# world for maps
+world_sf <- rnaturalearth::ne_countries(scale = "large", returnclass = "sf")
+
+# --- Main loop ---
+for (i in seq_along(species_cols)) {
+  sp <- species_cols[i]
+  message("Fitting model for: ", sp)
+
+  # Fit model (gracefully handle failures)
+  mod <- tryCatch(
+    fit_sdm_species(
+      species_col = sp,
+      rhs         = nw_formula,   # e.g., "~ chlor_a_standardized"
+      train_df    = train_data,
+      mesh        = shared_mesh,
+      spatial     = "on"
+    ),
+    error = function(e) NULL
+  )
+
+  if (is.null(mod)) {
+    passfail[[i]] <- data.frame(species = sp, species_pretty = pretty_species(sp), status = "fit_failed")
+    next
+  }
+
+  # Sanity
+  s <- tryCatch(sanity(mod), error = function(e) NULL)
+  if (is.null(s) || any(s$sanity == FALSE)) {
+    passfail[[i]] <- data.frame(species = sp, species_pretty = pretty_species(sp), status = "sanity_failed")
+    next
+  }
+
+  # Passed sanity
+  passfail[[i]] <- data.frame(species = sp, species_pretty = pretty_species(sp), status = "passed")
+
+  # Collect coefficients (for coeff_table ONLY)
+  td <- tidy(mod, effects = "fixed", conf.int = TRUE, conf.level = 0.90)
+  td$species <- sp
+  td$species_pretty <- pretty_species(sp)
+  coeff_rows[[i]] <- td
+
+  # -------- Build & SAVE the final plot (no coeff plots) --------
+  # Prediction map
+  pg <- predict_on_grid(mod, pace_grid_no_na, na_continents_proj_km)
+  map_p <- plot_map_raster(pg$pred, pg$continents_crop, fill_col = est, fill_lab = "CPUE")
+
+  # Observed CPUE (training points)
+  obs_p <- obs_points_map(train_data, sp, world_sf)
+
+  # Test-dataset diagnostics
+  diag <- test_diagnostics(mod, test_data, sp)
+
+  bars_p <- ggplot(diag$long_bars, aes(x = factor(row_order), y = value, fill = type)) +
+    geom_col(position = "dodge") +
+    scale_fill_manual(values = c("est" = "goldenrod2", "obs" = "grey47"),
+                      labels = c("Prediction", "Observed")) +
+    labs(x = "Trawl sites (south → north)", y = "CPUE (numbers per ha)", fill = NULL) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+  pts_sf <- st_as_sf(diag$diag_df, coords = c("longitude_dd", "latitude_dd"), crs = 4326)
+  bb <- st_bbox(pts_sf); xpad <- 0.1 * (bb$xmax - bb$xmin); ypad <- 0.1 * (bb$ymax - bb$ymin)
+
+  resid_p <- ggplot() +
+    geom_sf(data = world_sf, fill = "grey95", color = "white", linewidth = 0.2) +
+    geom_sf(data = pts_sf, aes(color = resid, size = abs_err), alpha = 0.8) +
+    coord_sf(xlim = c(bb$xmin - xpad, bb$xmax + xpad),
+             ylim = c(bb$ymin - ypad, bb$ymax + ypad),
+             expand = FALSE) +
+    scale_color_scico(palette = "vik", midpoint = 0, name = "Residual (Pred - Obs)") +
+    scale_size_area(max_size = 8, breaks = scales::pretty_breaks(4), name = "Absolute Error") +
+    labs(x = "Longitude", y = "Latitude") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  final_plot <- (obs_p + map_p + resid_p) / (bars_p + plot_layout(heights = c(1.5))) +
+    plot_annotation(
+      title = paste0(pretty_species(sp), " — Estimates of CPUE (individuals per ha)"),
+      tag_levels = "A"
+    )
+  ggsave(
+    filename = file.path(outdir, paste0(sp, "_map_plot.png")),
+    plot = map_p,
+    width = 8, height = 10, dpi = 400
+  )
+  ggsave(
+    filename = file.path(outdir, paste0(sp, "_final_plot.png")),
+    plot = final_plot,
+    width = 10, height = 8, dpi = 400
+  )
+  # --------------------------------------------------------------
+}
+
+# --- Summary tables ---
+sanity_table <- dplyr::bind_rows(passfail) %>% arrange(status, species)
+
+coeff_table <- coeff_rows %>%
+  purrr::compact() %>%
+  dplyr::bind_rows() %>%
+  dplyr::select(species, species_pretty, term, estimate, std.error, conf.low, conf.high, dplyr::everything())
+
+# Save ONLY the tables (no coeff plot PNGs)
+write.csv(sanity_table, file.path(outdir, "sdmtmb_sanity_table.csv"), row.names = FALSE)
+write.csv(coeff_table,  file.path(outdir, "sdmtmb_coefficients_all_species.csv"), row.names = FALSE)
+```
+
+#Final Coefficient Plotting
+```{r}
+library(dplyr)
+library(ggplot2)
+
+coef_plot_data <- coeff_table %>%
+  filter(term == "chlor_a_standardized") %>%
+  mutate(species_pretty = reorder(species_pretty, estimate))
+
+ggplot(coef_plot_data,
+       aes(x = estimate, y = species_pretty)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  labs(
+    x = "Effect of chlorophyll-a standardized",
+    y = "Species",
+    title = "Species-specific effect of chlorophyll-a"
+  ) +
+  theme_minimal()
+
+#Fix name capitilizations
+life_history <- life_history %>%
+  mutate(Common_name = str_to_title(Common_name))
+unique(life_history$Common_name)
+
+coef_plot_data <- coef_plot_data %>%
+  rename(Common_name = species_pretty)
 
 
+#Final Plot
+final_plot_data <- coef_plot_data %>%
+  left_join(
+    life_history,
+    by = "Common_name"
+  )
 
-#All Survey Sites
+final_plot_data <- final_plot_data %>%
+  mutate(Common_name = forcats::fct_reorder(Common_name, estimate))
+
+#########################
+#Overall Figure of resident/mobile
+#########################
+
+resident_mobile_chla <- ggplot(final_plot_data,
+       aes(x = estimate, y = Common_name, color = Dominant_movement)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  labs(
+    x = "Effect of chlorophyll-a standardized",
+    y = "Species",
+    title = "Species-specific effect of chlorophyll-a",
+    color = "Dominant movement"  # legend title
+  ) +
+  theme_minimal()
+
+ggsave(
+    filename = "resident_mobile_chla.png",
+    plot = resident_mobile_chla,
+    width = 9, height = 7, dpi = 400
+  )
+
+#########################
+#Overall Figure of planktonivores and other
+#########################
+trophic_level_chla <- ggplot(final_plot_data,
+       aes(x = estimate, y = Common_name, color = adult_prey_category)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  labs(
+    x = "Effect of chlorophyll-a standardized",
+    y = "Species",
+    title = "Species-specific effect of chlorophyll-a",
+    color = "Dominant movement"  # legend title
+  ) +
+  theme_minimal()
+ggsave(
+    filename = "trophic_level_chla.png",
+    plot = trophic_level_chla,
+    width = 9, height = 7, dpi = 400
+  )
+
+trophic_level_chla_detailed <- ggplot(final_plot_data,
+       aes(x = estimate, y = Common_name, color = Dominant_prey_adult)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  labs(
+    x = "Effect of chlorophyll-a standardized",
+    y = "Species",
+    title = "Species-specific effect of chlorophyll-a",
+    color = "Dominant movement"  # legend title
+  ) +
+  theme_minimal()
+ggsave(
+    filename = "trophic_level_chla_detailed.png",
+    plot = trophic_level_chla_detailed,
+    width = 9, height = 7, dpi = 400
+  )
 
 
-
-
-
-
+```

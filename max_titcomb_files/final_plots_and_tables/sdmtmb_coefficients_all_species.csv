@@ -1,0 +1,93 @@
+"species","species_pretty","term","estimate","std.error","conf.low","conf.high"
+"arrowtooth_flounder_cpue_numbers_per_ha_der","Arrowtooth Flounder","(Intercept)",-2.62058424397027,3.52713905263016,-8.42221170745117,3.18104321951062
+"arrowtooth_flounder_cpue_numbers_per_ha_der","Arrowtooth Flounder","chlor_a_standardized",-0.977113476225239,0.749893196969454,-2.21057802108668,0.256351068636202
+"aurora_rockfish_cpue_numbers_per_ha_der","Aurora Rockfish","(Intercept)",0.105546156218748,0.415567975415397,-0.578002335388148,0.789094647825644
+"aurora_rockfish_cpue_numbers_per_ha_der","Aurora Rockfish","chlor_a_standardized",0.143042091129504,0.573259815860381,-0.799886396173977,1.08597057843298
+"big_skate_cpue_numbers_per_ha_der","Big Skate","(Intercept)",-3.45063645629563,1.03553536770767,-5.15394056170613,-1.74733235088514
+"big_skate_cpue_numbers_per_ha_der","Big Skate","chlor_a_standardized",0.412443416281401,0.373014983855059,-0.201111632819838,1.02599846538264
+"bigfin_eelpout_cpue_numbers_per_ha_der","Bigfin Eelpout","(Intercept)",-0.0673588165625172,0.52129561790143,-0.924813804381593,0.790096171256559
+"bigfin_eelpout_cpue_numbers_per_ha_der","Bigfin Eelpout","chlor_a_standardized",0.432421311950226,0.27170916904854,-0.0145005002352351,0.879343124135687
+"black_eelpout_cpue_numbers_per_ha_der","Black Eelpout","(Intercept)",-2.9306231669861,1.15246752034424,-4.82626354776809,-1.03498278620412
+"black_eelpout_cpue_numbers_per_ha_der","Black Eelpout","chlor_a_standardized",0.157907840515307,0.620023438061761,-0.8619399603755,1.17775564140612
+"black_hagfish_cpue_numbers_per_ha_der","Black Hagfish","(Intercept)",-14.9662119450203,9.77971880316379,-31.0524178889698,1.11999399892914
+"black_hagfish_cpue_numbers_per_ha_der","Black Hagfish","chlor_a_standardized",-22.9682379483022,21.0697826638927,-57.6249463820854,11.688470485481
+"blackbelly_eelpout_cpue_numbers_per_ha_der","Blackbelly Eelpout","(Intercept)",-1.33708176055331,0.91930979026026,-2.84921180335489,0.175048282248278
+"blackbelly_eelpout_cpue_numbers_per_ha_der","Blackbelly Eelpout","chlor_a_standardized",0.532123958292792,0.358874207699097,-0.0581715838604028,1.12241950044599
+"blacktail_snailfish_cpue_numbers_per_ha_der","Blacktail Snailfish","(Intercept)",-1.74262942234279,0.389708310813177,-2.38364255083697,-1.1016162938486
+"blacktail_snailfish_cpue_numbers_per_ha_der","Blacktail Snailfish","chlor_a_standardized",-0.760300453918801,0.627590037211886,-1.79259420286538,0.271993295027779
+"brown_cat_shark_cpue_numbers_per_ha_der","Brown Cat Shark","(Intercept)",0.135549171844411,0.465704823891257,-0.630467096821919,0.901565440510741
+"brown_cat_shark_cpue_numbers_per_ha_der","Brown Cat Shark","chlor_a_standardized",-0.48490084419725,0.564425020078332,-1.41329738561525,0.443495697220751
+"California_skate_cpue_numbers_per_ha_der","California Skate","(Intercept)",-3.54727448044198,1.51120901495473,-6.03299210977204,-1.06155685111193
+"California_skate_cpue_numbers_per_ha_der","California Skate","chlor_a_standardized",0.695023347435611,0.346347553064994,0.125332318590889,1.26471437628033
+"California_slickhead_cpue_numbers_per_ha_der","California Slickhead","(Intercept)",-0.664252529836785,1.53630238516105,-3.19124508016314,1.86274002048957
+"California_slickhead_cpue_numbers_per_ha_der","California Slickhead","chlor_a_standardized",-2.11534431317284,1.19352662293687,-4.07852090777368,-0.152167718571995
+"canary_rockfish_cpue_numbers_per_ha_der","Canary Rockfish","(Intercept)",-3.07310262465977,0.745740337723062,-4.29973632392756,-1.84646892539198
+"canary_rockfish_cpue_numbers_per_ha_der","Canary Rockfish","chlor_a_standardized",-2.54221007806897,1.96284566574447,-5.77080389051473,0.686383734376793
+"curlfin_sole_cpue_numbers_per_ha_der","Curlfin Sole","(Intercept)",-5.16514623009096,2.07185987955039,-8.57305246750467,-1.75723999267726
+"curlfin_sole_cpue_numbers_per_ha_der","Curlfin Sole","chlor_a_standardized",0.0771228537656079,1.03311234104233,-1.6221957274462,1.77644143497741
+"darkblotched_rockfish_cpue_numbers_per_ha_der","Darkblotched Rockfish","(Intercept)",-1.55631941766504,2.05715360016011,-4.94003597808468,1.82739714275459
+"darkblotched_rockfish_cpue_numbers_per_ha_der","Darkblotched Rockfish","chlor_a_standardized",-0.0767095579565612,1.19630290023914,-2.04445272234747,1.89103360643435
+"deepsea_smelt_unident._cpue_numbers_per_ha_der","Deepsea Smelt Unident.","(Intercept)",-4.09650311627697,1.63327334459986,-6.7829987009452,-1.41000753160873
+"deepsea_smelt_unident._cpue_numbers_per_ha_der","Deepsea Smelt Unident.","chlor_a_standardized",-0.252945424063479,0.752016294765716,-1.48990215403547,0.984011305908516
+"deepsea_sole_cpue_numbers_per_ha_der","Deepsea Sole","(Intercept)",-6.49010462424854,2.2784968088582,-10.2378983642963,-2.74231088420078
+"deepsea_sole_cpue_numbers_per_ha_der","Deepsea Sole","chlor_a_standardized",-1.42975983452526,0.884421271799862,-2.88450337119829,0.0249837021477808
+"filetail_cat_shark_cpue_numbers_per_ha_der","Filetail Cat Shark","(Intercept)",-5.01395979919379,2.56279997216761,-9.22939062856481,-0.798528969822777
+"filetail_cat_shark_cpue_numbers_per_ha_der","Filetail Cat Shark","chlor_a_standardized",-0.50630332696049,0.808034568358993,-1.83540191742795,0.822795263506966
+"giant_grenadier_cpue_numbers_per_ha_der","Giant Grenadier","(Intercept)",-2.08601917784386,1.01488854890886,-3.75536228846812,-0.416676067219612
+"giant_grenadier_cpue_numbers_per_ha_der","Giant Grenadier","chlor_a_standardized",-2.48027099547949,1.57839782901629,-5.07650438930927,0.115962398350283
+"greenstriped_rockfish_cpue_numbers_per_ha_der","Greenstriped Rockfish","(Intercept)",-0.868979743474357,1.29714859723174,-3.002599318326,1.26463983137728
+"greenstriped_rockfish_cpue_numbers_per_ha_der","Greenstriped Rockfish","chlor_a_standardized",-2.3665509568458,1.81350427026486,-5.34950003328293,0.616398119591332
+"hagfish_unident._cpue_numbers_per_ha_der","Hagfish Unident.","(Intercept)",-3.63172434120402,1.69861903004336,-6.42570401357963,-0.837744668828417
+"hagfish_unident._cpue_numbers_per_ha_der","Hagfish Unident.","chlor_a_standardized",-1.12509762636768,0.981212428270752,-2.73904844781869,0.488853195083329
+"halfbanded_rockfish_cpue_numbers_per_ha_der","Halfbanded Rockfish","(Intercept)",1.0719981536086,0.66151005474575,-0.0160890592048106,2.16008536642202
+"halfbanded_rockfish_cpue_numbers_per_ha_der","Halfbanded Rockfish","chlor_a_standardized",-0.801379776572925,1.86261512641771,-3.86510902287576,2.26234946972991
+"lanternfish_unident._cpue_numbers_per_ha_der","Lanternfish Unident.","(Intercept)",-3.81427925039251,0.905448050034708,-5.30360875950824,-2.32494974127679
+"lanternfish_unident._cpue_numbers_per_ha_der","Lanternfish Unident.","chlor_a_standardized",-0.825948258591834,0.967374856037729,-2.41713829916715,0.765241781983482
+"longnose_skate_cpue_numbers_per_ha_der","Longnose Skate","(Intercept)",0.351574345625809,0.257076663247786,-0.0712791363218939,0.774427827573513
+"longnose_skate_cpue_numbers_per_ha_der","Longnose Skate","chlor_a_standardized",-0.11271478980342,0.242400885049871,-0.511428764753946,0.285999185147107
+"longspine_combfish_cpue_numbers_per_ha_der","Longspine Combfish","(Intercept)",-2.07526333445035,0.806606569657457,-3.40201307607431,-0.7485135928264
+"longspine_combfish_cpue_numbers_per_ha_der","Longspine Combfish","chlor_a_standardized",-3.00070115163368,2.23309618584509,-6.67381751225247,0.672415208985109
+"longspine_thornyhead_cpue_numbers_per_ha_der","Longspine Thornyhead","(Intercept)",2.23609094218759,1.09236730781007,0.439306613972984,4.0328752704022
+"longspine_thornyhead_cpue_numbers_per_ha_der","Longspine Thornyhead","chlor_a_standardized",-1.13754206544209,0.777164783752527,-2.41586437873639,0.140780247852214
+"Pacific_grenadier_cpue_numbers_per_ha_der","Pacific Grenadier","(Intercept)",-2.10965032220106,1.20578370088139,-4.09298801591479,-0.126312628487328
+"Pacific_grenadier_cpue_numbers_per_ha_der","Pacific Grenadier","chlor_a_standardized",-1.1285249663697,1.26931913554678,-3.21636915023273,0.959319217493331
+"Pacific_hake_cpue_numbers_per_ha_der","Pacific Hake","(Intercept)",0.410941511461848,0.523462146031715,-0.45007709801022,1.27196012093392
+"Pacific_hake_cpue_numbers_per_ha_der","Pacific Hake","chlor_a_standardized",-0.565376282905698,0.546647371979422,-1.46453119536954,0.333778629558144
+"Pacific_ocean_perch_cpue_numbers_per_ha_der","Pacific Ocean Perch","(Intercept)",-1.88175179754624,1.42745289057764,-4.22970286191523,0.466199266822748
+"Pacific_ocean_perch_cpue_numbers_per_ha_der","Pacific Ocean Perch","chlor_a_standardized",-5.4685034952325,3.44048341745294,-11.1275951228964,0.190588132431357
+"Pacific_viperfish_cpue_numbers_per_ha_der","Pacific Viperfish","(Intercept)",-9.89069586414155,3.13273437078152,-15.0435853561971,-4.73780637208603
+"Pacific_viperfish_cpue_numbers_per_ha_der","Pacific Viperfish","chlor_a_standardized",-18.158373708278,7.50948902976267,-30.5103839754354,-5.80636344112061
+"petrale_sole_cpue_numbers_per_ha_der","Petrale Sole","(Intercept)",-0.512048937705919,0.648095780204497,-1.57807163238723,0.553973756975391
+"petrale_sole_cpue_numbers_per_ha_der","Petrale Sole","chlor_a_standardized",0.359143012724585,0.302088640778448,-0.137748583720685,0.856034609169856
+"plainfin_midshipman_cpue_numbers_per_ha_der","Plainfin Midshipman","(Intercept)",-0.375317236545301,0.611150604788959,-1.38057052544601,0.629936052355403
+"plainfin_midshipman_cpue_numbers_per_ha_der","Plainfin Midshipman","chlor_a_standardized",-0.489813885025771,1.516912229637,-2.98491246771124,2.0052846976597
+"redbanded_rockfish_cpue_numbers_per_ha_der","Redbanded Rockfish","(Intercept)",-1.35833236249435,NA,NA,NA
+"redbanded_rockfish_cpue_numbers_per_ha_der","Redbanded Rockfish","chlor_a_standardized",-0.591340545294702,NA,NA,NA
+"rex_sole_cpue_numbers_per_ha_der","Rex Sole","(Intercept)",1.51643769884669,1.17648337785751,-0.418705252270347,3.45158064996372
+"rex_sole_cpue_numbers_per_ha_der","Rex Sole","chlor_a_standardized",0.284549576769743,0.255906336920863,-0.136378889674403,0.705478043213889
+"roughtail_skate_cpue_numbers_per_ha_der","Roughtail Skate","(Intercept)",-2.05271461874134,0.48531200489001,-2.85098183018776,-1.25444740729491
+"roughtail_skate_cpue_numbers_per_ha_der","Roughtail Skate","chlor_a_standardized",-2.15077720707216,1.32394083176766,-4.32846608607434,0.0269116719300251
+"sablefish_cpue_numbers_per_ha_der","Sablefish","(Intercept)",2.15702502265918,0.292633454948493,1.67568582291981,2.63836422239854
+"sablefish_cpue_numbers_per_ha_der","Sablefish","chlor_a_standardized",-0.220807713245546,0.254763345497407,-0.639856126101247,0.198240699610154
+"sandpaper_skate_cpue_numbers_per_ha_der","Sandpaper Skate","(Intercept)",-1.87801778734181,0.90167801856085,-3.36114614651405,-0.394889428169584
+"sandpaper_skate_cpue_numbers_per_ha_der","Sandpaper Skate","chlor_a_standardized",-0.175416624283324,0.570661925806071,-1.11407196270855,0.763238714141903
+"sharpchin_rockfish_cpue_numbers_per_ha_der","Sharpchin Rockfish","(Intercept)",-3.99781691788853,5.50350052095159,-13.0502697107051,5.05463587492801
+"sharpchin_rockfish_cpue_numbers_per_ha_der","Sharpchin Rockfish","chlor_a_standardized",-6.22453678583743,6.30629877977732,-16.5974752063938,4.14840163471893
+"shortbelly_rockfish_cpue_numbers_per_ha_der","Shortbelly Rockfish","(Intercept)",0.505591321448182,0.751002073361022,-0.72969716276777,1.74087980566413
+"shortbelly_rockfish_cpue_numbers_per_ha_der","Shortbelly Rockfish","chlor_a_standardized",-0.484335080814553,1.5263132991494,-2.9948970467847,2.0262268851556
+"shortspine_thornyhead_cpue_numbers_per_ha_der","Shortspine Thornyhead","(Intercept)",2.0655669559427,0.254329522387991,1.64723211860198,2.48390179328342
+"shortspine_thornyhead_cpue_numbers_per_ha_der","Shortspine Thornyhead","chlor_a_standardized",-0.505357568688579,0.354405388234519,-1.08830255693727,0.0775874195601142
+"slender_sole_cpue_numbers_per_ha_der","Slender Sole","(Intercept)",0.0945122599165484,0.799707960094538,-1.22089027874692,1.40991479858001
+"slender_sole_cpue_numbers_per_ha_der","Slender Sole","chlor_a_standardized",0.205458399680803,0.434421496690928,-0.509101374776957,0.920018174138563
+"snakehead_eelpout_cpue_numbers_per_ha_der","Snakehead Eelpout","(Intercept)",-4.18368565640647,2.41270993581002,-8.15224034510544,-0.215130967707504
+"snakehead_eelpout_cpue_numbers_per_ha_der","Snakehead Eelpout","chlor_a_standardized",-0.79341133112007,1.32652115597102,-2.97534446574687,1.38852180350673
+"splitnose_rockfish_cpue_numbers_per_ha_der","Splitnose Rockfish","(Intercept)",2.15643958064575,0.441642652619544,1.43000206166802,2.88287709962348
+"splitnose_rockfish_cpue_numbers_per_ha_der","Splitnose Rockfish","chlor_a_standardized",-0.38567090740569,0.612037281501927,-1.39238264971365,0.621040834902272
+"spotted_ratfish_cpue_numbers_per_ha_der","Spotted Ratfish","(Intercept)",0.233407708729412,0.563723313828229,-0.693834628618052,1.16065004607688
+"spotted_ratfish_cpue_numbers_per_ha_der","Spotted Ratfish","chlor_a_standardized",0.0167620689377926,0.350966908033171,-0.560527122680512,0.594051260556097
+"stripetail_rockfish_cpue_numbers_per_ha_der","Stripetail Rockfish","(Intercept)",0.232707299063771,1.08926328992429,-1.55897137407328,2.02438597220083
+"stripetail_rockfish_cpue_numbers_per_ha_der","Stripetail Rockfish","chlor_a_standardized",-3.90751692116525,2.27401251931666,-7.64793466129631,-0.16709918103419
+"threadfin_sculpin_cpue_numbers_per_ha_der","Threadfin Sculpin","(Intercept)",-5.20753948143419,1.77907485441008,-8.13385720832878,-2.28122175453961
+"threadfin_sculpin_cpue_numbers_per_ha_der","Threadfin Sculpin","chlor_a_standardized",-1.34729265879971,1.60316811486222,-3.98426954714377,1.28968422954436
+"twoline_eelpout_cpue_numbers_per_ha_der","Twoline Eelpout","(Intercept)",-1.78808368284914,0.830034087403416,-3.153368262008,-0.422799103690273
+"twoline_eelpout_cpue_numbers_per_ha_der","Twoline Eelpout","chlor_a_standardized",-0.987125144047327,0.971777017700698,-2.5855560962004,0.611305808105751
