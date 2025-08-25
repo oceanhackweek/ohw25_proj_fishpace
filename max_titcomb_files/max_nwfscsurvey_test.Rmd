@@ -101,7 +101,7 @@ catch_data <- catch_data %>%
 catch_data <- catch_data %>%
   left_join(
     life_history %>% 
-      select(Common_name, Dominant_movement, juv_prey_category, adult_prey_category),
+      select(Common_name),#, Dominant_movement, juv_prey_category, adult_prey_category),
     by = "Common_name"
   )
 
@@ -1094,6 +1094,7 @@ write.csv(sanity_table, file.path(outdir, "sdmtmb_sanity_table.csv"), row.names 
 write.csv(coeff_table,  file.path(outdir, "sdmtmb_coefficients_all_species.csv"), row.names = FALSE)
 ```
 
+#Final Coefficient Plotting
 ```{r}
 library(dplyr)
 library(ggplot2)
@@ -1117,146 +1118,83 @@ ggplot(coef_plot_data,
 #Fix name capitilizations
 life_history <- life_history %>%
   mutate(Common_name = str_to_title(Common_name))
-catch_data <- catch_data %>%
-  mutate(Common_name = str_to_title(Common_name))
 unique(life_history$Common_name)
-unique(catch_data$Common_name)
+
+coef_plot_data <- coef_plot_data %>%
+  rename(Common_name = species_pretty)
 
 
-final_plot_data <- catch_data %>%
+#Final Plot
+final_plot_data <- coef_plot_data %>%
   left_join(
-    life_history %>% 
-      select(Common_name, Dominant_movement, juv_prey_category, adult_prey_category),
+    life_history,
     by = "Common_name"
   )
-```
 
+final_plot_data <- final_plot_data %>%
+  mutate(Common_name = forcats::fct_reorder(Common_name, estimate))
 
-Almosttt
-```{r}
-# --- Setup ---
-outdir <- "final_plots_and_tables"
-if (!dir.exists(outdir)) dir.create(outdir)
+#########################
+#Overall Figure of resident/mobile
+#########################
 
-pretty_species <- function(x) {
-  x <- gsub("_cpue_numbers_per_ha_der$|_cpue_kg_per_ha_der$|_presence$", "", x)
-  x <- gsub("_", " ", x)
-  tools::toTitleCase(x)
-}
+resident_mobile_chla <- ggplot(final_plot_data,
+       aes(x = estimate, y = Common_name, color = Dominant_movement)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  labs(
+    x = "Effect of chlorophyll-a standardized",
+    y = "Species",
+    title = "Species-specific effect of chlorophyll-a",
+    color = "Dominant movement"  # legend title
+  ) +
+  theme_minimal()
 
-species_cols <- grep("_cpue_numbers_per_ha_der$", names(train_data), value = TRUE)
-
-shared_mesh <- build_barrier_mesh(train_data, na_continents_proj_km, cutoff = 20)
-
-# Containers
-passfail <- vector("list", length(species_cols))
-coeff_rows <- vector("list", length(species_cols))
-
-for (i in seq_along(species_cols)) {
-  sp <- species_cols[i]
-  message("Fitting model for: ", sp)
-
-  mod <- tryCatch(
-    fit_sdm_species(
-      species_col = sp,
-      rhs         = nw_formula,
-      train_df    = train_data,
-      mesh        = shared_mesh,
-      spatial     = "on"
-    ),
-    error = function(e) NULL
+ggsave(
+    filename = "resident_mobile_chla.png",
+    plot = resident_mobile_chla,
+    width = 9, height = 7, dpi = 400
   )
 
-  if (is.null(mod)) {
-    passfail[[i]] <- data.frame(species = sp, species_pretty = pretty_species(sp), status = "fit_failed")
-    next
-  }
-
-  s <- tryCatch(sanity(mod), error = function(e) NULL)
-
-  if (is.null(s) || any(s$sanity == FALSE)) {
-    passfail[[i]] <- data.frame(species = sp, species_pretty = pretty_species(sp), status = "sanity_failed")
-    next
-  }
-
-  passfail[[i]] <- data.frame(species = sp, species_pretty = pretty_species(sp), status = "passed")
-
-  td <- tidy(mod, effects = "fixed", conf.int = TRUE, conf.level = 0.90)
-  td$species <- sp
-  td$species_pretty <- pretty_species(sp)
-  coeff_rows[[i]] <- td
-
-  # Save species coefficient plot
-  coeff_plot <- ggplot(td, aes(x = estimate, y = factor(term, levels = rev(term)))) +
-    geom_vline(xintercept = 0, lty = 2) +
-    geom_point(size = 3) +
-    geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
-    labs(title = paste(pretty_species(sp), "Covariate Effects (90% CI)"),
-         x = "Coefficient Estimate", y = "Covariates") +
-    theme_bw()
-
-  ggsave(
-    filename = file.path(outdir, paste0(sp, "_coeff_plot.png")),
-    plot = coeff_plot,
-    width = 6, height = 4, dpi = 300
+#########################
+#Overall Figure of planktonivores and other
+#########################
+trophic_level_chla <- ggplot(final_plot_data,
+       aes(x = estimate, y = Common_name, color = adult_prey_category)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  labs(
+    x = "Effect of chlorophyll-a standardized",
+    y = "Species",
+    title = "Species-specific effect of chlorophyll-a",
+    color = "Dominant movement"  # legend title
+  ) +
+  theme_minimal()
+ggsave(
+    filename = "trophic_level_chla.png",
+    plot = trophic_level_chla,
+    width = 9, height = 7, dpi = 400
   )
-}
 
-# --- Final tables ---
-sanity_table <- dplyr::bind_rows(passfail) %>%
-  arrange(status, species)
-
-coeff_table  <- coeff_rows %>%
-  purrr::compact() %>%
-  dplyr::bind_rows() %>%
-  dplyr::select(species, species_pretty, term, estimate, std.error, conf.low, conf.high, everything())
-
-# Save tables
-write_csv(sanity_table, file.path(outdir, "sdmtmb_sanity_table.csv"))
-write_csv(coeff_table,  file.path(outdir, "sdmtmb_coefficients_all_species.csv"))
-```
-
-
-Last
-```{r}
-# Identify species columns ending with "_cpue_numbers_per_ha_der"
-species_cols <- grep("_cpue_numbers_per_ha_der$", names(train_data), value = TRUE)
-
-# Store results
-results <- lapply(species_cols, function(sp) {
-  message("Fitting model for: ", sp)
-  # Try fitting
-  mod <- tryCatch(
-    fit_sdm_species(
-      species_col = sp,
-      rhs         = nw_formula,
-      train_df    = train_data,
-      mesh        = build_barrier_mesh(train_data, na_continents_proj_km, cutoff = 20),
-      spatial     = "on"
-    ),
-    error = function(e) NULL
+trophic_level_chla_detailed <- ggplot(final_plot_data,
+       aes(x = estimate, y = Common_name, color = Dominant_prey_adult)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  labs(
+    x = "Effect of chlorophyll-a standardized",
+    y = "Species",
+    title = "Species-specific effect of chlorophyll-a",
+    color = "Dominant movement"  # legend title
+  ) +
+  theme_minimal()
+ggsave(
+    filename = "trophic_level_chla_detailed.png",
+    plot = trophic_level_chla_detailed,
+    width = 9, height = 7, dpi = 400
   )
-  
-  # If model failed outright
-  if (is.null(mod)) {
-    return(data.frame(species = sp, status = "fit_failed"))
-  }
-  
-  # Run sanity check
-  s <- tryCatch(sanity(mod), error = function(e) NULL)
-  
-  if (is.null(s)) {
-    return(data.frame(species = sp, status = "sanity_failed"))
-  } else if (any(s$sanity == FALSE)) {
-    return(data.frame(species = sp, status = "sanity_failed"))
-  } else {
-    return(data.frame(species = sp, status = "passed"))
-  }
-})
 
-# Combine into one table
-sanity_table <- do.call(rbind, results)
 
-sanity_table
 ```
-
