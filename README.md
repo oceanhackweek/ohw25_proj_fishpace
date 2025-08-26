@@ -63,23 +63,53 @@ Trawl Data: Trawl data was prepared by subsetting only the fish species that wer
   East Coast: Since the biological and environmental data is in separate .csv files, these two were merged together with Latitude, Longitude, Surface and Bottom Temperature, Surface and Bottom Salinity and Average Depth.
   selected. The final data frame consisted of rows corresponding to each individual trawl ID and columns corresponding to a species caught in the trawl, and the environmental data associated with each respective trawl ID.
 
-  West Coast: 
-  
-Larval Data: 
+West Coast: 
+Trawl data was derived from the Northwest Fisheries Science Center (NWFSC) Survey package here: https://pfmc-assessments.github.io/nwfscSurvey/index.html
 
-PACE Data: 
+<img width="2400" height="1800" alt="survey_sites_map (1)" src="https://github.com/user-attachments/assets/1454ef5a-a470-4c21-aed8-b8c6ec252b1e" />
+
+
+PACE Data: https://pace.gsfc.nasa.gov/
 
 ### 3. Model training
+Response & covariate. For each species with sufficient data, I modeled raw CPUE (individuals per ha) from the NWFSC West Coast trawl survey as a function of PACE chlorophyll-a:
+
+\log(\text{E[CPUE]}) \;=\; \beta_0 \;+\; \beta_1\;\text{chlor\_a\_standardized} \;+\; \text{spatial random field}
+
+  •	**Response:** derivation of catch per unit effort in numbers of individuals per hectare ordinarily estimated as the expanded haul catch in numbers divided by the area swept by the net.
+	•	**Family/link:** Tweedie with log link (appropriate for many zeros + right-skewed positive values).
+	•	**Covariate:** chlor_a_standardized (PACE Chl-a z-scored).
+	•	**Species inclusion:** kept species present in ≥ 50 trawls with non-zero catch.
+	•	**Spatial structure:** barrier mesh over the coastline (North America land polygons projected to UTM 10N and scaled to km) with spatial = “on”, spatiotemporal = “off”.
+	•	**Fitting:** sdmTMB with sanity() gating; species failing sanity checks were skipped.
+	•	**Train/test split:** random 80/20 by trawl (slice_sample(prop = 0.2) for test set).
+	•	**Prediction grid:** satellite grid with UTM km coordinates (pace_grid_no_na) for mapping predictions.
+
+This setup let me estimate a single coefficient per species for the marginal effect of PACE Chl-a on CPUE while accounting for spatial autocorrelation.
 
 ### 4. Model prediction and visualization
+For each species that passed sanity checks I generated a standardized four-panel figure:
+	•	A — Observed CPUE map (training): bubble map of observed CPUE over land basemap.
+	•	B — Predicted CPUE raster (grid): model predictions on the PACE grid (log-scaled fill) with coastline mask.
+	•	C — Spatial residuals (held-out): points colored by Pred − Obs and sized by absolute error to show regional over/under-prediction patterns.
+	•	D — Bars (held-out): side-by-side Predicted vs Observed CPUE ordered south→north to visualize bias along latitude.
+
+ <img width="4000" height="3200" alt="arrowtooth_flounder_cpue_numbers_per_ha_der_final_plot (1)" src="https://github.com/user-attachments/assets/0b6ce32f-a6fe-44f7-b161-eb691f05d0bb" />
+
+I also extracted fixed-effects coefficients and 90% CIs for chlor_a_standardized across all species and compiled them into a single table. Using life-history joins, I produced summary coefficient plots colored by dominant movement and by adult prey category.
+<img width="3600" height="2800" alt="resident_mobile_chla" src="https://github.com/user-attachments/assets/2bd913cf-0a98-49de-a30d-67cfbcb99fab" />
+
+<img width="3600" height="2800" alt="trophic_level_chla" src="https://github.com/user-attachments/assets/58ba33b3-095e-43c1-b876-c5844e81f5cf" />
 
 ## Results/Findings
 
-TBD
+	•	**Most species:** Chl-a effect on adult CPUE is small/uncertain (90% CIs often cross 0).
+	•	**Some negatives:** A minority show negative associations with Chl-a.
+	•	**Validation: **Held-out bars/residual maps show modest skill with regional bias—Chl-a alone doesn’t explain adult demersal CPUE.
 
-## Lessons Learned
+## Lessons Learned & Next Steps
 
-TBD
+Future work will integrate additional PACE products (e.g., attenuation, absorption, backscatter) and external plankton community data from MOANA ERDDAP to test whether optical properties or plankton group composition improve predictions. Exploring time-varying coefficients and spatiotemporal models will help assess how relationships shift across seasons and years, providing a clearer picture of when and where PACE data best explain fish distributions.
 
 ## References
 
