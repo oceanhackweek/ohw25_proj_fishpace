@@ -75,8 +75,9 @@ PACE Data: https://pace.gsfc.nasa.gov/
 Response & covariate. For each species with sufficient data, I modeled raw CPUE (individuals per ha) from the NWFSC West Coast trawl survey as a function of PACE chlorophyll-a:
 
 $$
-\log \big( \mathbb{E}[\text{CPUE}] \big) \;=\; \beta_0 \;+\; \beta_1 \cdot \text{chlor\_a\_standardized} \;+\; \text{spatial random field}
+\log \big( \mathbb{E}[\text{CPUE}] \big) = \beta_0 + \beta_1 \cdot \text{chlor\_a\_standardized} + \text{spatial random field}
 $$
+
 
   •	**Response:** derivation of catch per unit effort in numbers of individuals per hectare ordinarily estimated as the expanded haul catch in numbers divided by the area swept by the net.
 	•	**Family/link:** Tweedie with log link (appropriate for many zeros + right-skewed positive values).
