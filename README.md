@@ -75,18 +75,18 @@ PACE Data: https://pace.gsfc.nasa.gov/
 Response & covariate. For each species with sufficient data, I modeled raw CPUE (individuals per ha) from the NWFSC West Coast trawl survey as a function of PACE chlorophyll-a:
 
 $$
-\log \big( \mathbb{E}[\text{CPUE}] \big) = \beta_0 + \beta_1 \cdot \text{chlor\_a\_standardized} + \text{spatial random field}
+\log \big( \mathbb{E}[\text{CPUE}] \big) = \beta_0 + \beta_1 \cdot \text{chlor a standardized} + \text{spatial random field}
 $$
 
+- **Response**: derivation of catch per unit effort in numbers of individuals per hectare, estimated as expanded haul catch in numbers divided by the area swept by the net.  
+- **Family / link**: Tweedie with log link (handles many zeros + right-skewed positive values).  
+- **Covariate**: `chlor_a_standardized` (PACE Chl-a, z-scored).  
+- **Species inclusion**: kept species present in ≥ 50 trawls with non-zero catch.  
+- **Spatial structure**: barrier mesh over coastline (North America land polygons projected to UTM 10N and scaled to km), with `spatial = "on"`, `spatiotemporal = "off"`.  
+- **Fitting**: `sdmTMB` with `sanity()` gating; species failing sanity checks were skipped.  
+- **Train/test split**: random 80/20 by trawl (`slice_sample(prop = 0.2)` for test set).  
+- **Prediction grid**: satellite grid with UTM km coordinates (`pace_grid_no_na`) for mapping predictions.  
 
-  •	**Response:** derivation of catch per unit effort in numbers of individuals per hectare ordinarily estimated as the expanded haul catch in numbers divided by the area swept by the net.
-	•	**Family/link:** Tweedie with log link (appropriate for many zeros + right-skewed positive values).
-	•	**Covariate:** chlor_a_standardized (PACE Chl-a z-scored).
-	•	**Species inclusion:** kept species present in ≥ 50 trawls with non-zero catch.
-	•	**Spatial structure:** barrier mesh over the coastline (North America land polygons projected to UTM 10N and scaled to km) with spatial = “on”, spatiotemporal = “off”.
-	•	**Fitting:** sdmTMB with sanity() gating; species failing sanity checks were skipped.
-	•	**Train/test split:** random 80/20 by trawl (slice_sample(prop = 0.2) for test set).
-	•	**Prediction grid:** satellite grid with UTM km coordinates (pace_grid_no_na) for mapping predictions.
 
 This setup let me estimate a single coefficient per species for the marginal effect of PACE Chl-a on CPUE while accounting for spatial autocorrelation.
 
