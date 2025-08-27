@@ -74,7 +74,9 @@ PACE Data: https://pace.gsfc.nasa.gov/
 ### 3. Model training
 Response & covariate. For each species with sufficient data, I modeled raw CPUE (individuals per ha) from the NWFSC West Coast trawl survey as a function of PACE chlorophyll-a:
 
-\log(\text{E[CPUE]}) \;=\; \beta_0 \;+\; \beta_1\;\text{chlor\_a\_standardized} \;+\; \text{spatial random field}
+$$
+\log \big( \mathbb{E}[\text{CPUE}] \big) \;=\; \beta_0 \;+\; \beta_1 \cdot \text{chlor\_a\_standardized} \;+\; \text{spatial random field}
+$$
 
   •	**Response:** derivation of catch per unit effort in numbers of individuals per hectare ordinarily estimated as the expanded haul catch in numbers divided by the area swept by the net.
 	•	**Family/link:** Tweedie with log link (appropriate for many zeros + right-skewed positive values).
@@ -103,9 +105,9 @@ I also extracted fixed-effects coefficients and 90% CIs for chlor_a_standardized
 
 ## Results/Findings
 
-	•	**Most species:** Chl-a effect on adult CPUE is small/uncertain (90% CIs often cross 0).
-	•	**Some negatives:** A minority show negative associations with Chl-a.
-	•	**Validation: **Held-out bars/residual maps show modest skill with regional bias—Chl-a alone doesn’t explain adult demersal CPUE.
+**Most species:** Chl-a effect on adult CPUE is small/uncertain (90% CIs often cross 0).
+**Some negatives:** A minority show negative associations with Chl-a.
+**Validation:** Held-out bars/residual maps show modest skill with regional bias—Chl-a alone doesn’t explain adult demersal CPUE.
 
 ## Lessons Learned & Next Steps
 
